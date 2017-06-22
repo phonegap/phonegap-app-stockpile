@@ -14,7 +14,7 @@ A PhoneGap example app using [Vue.js](https://vuejs.org), [Framework7 (with Vue.
 ### Clone
 
 ```
-git clone https://github.com/phonegap/phonegap-app-stopckpile
+git clone https://github.com/phonegap/phonegap-app-stockpile
 cd phonegap-app-stockpile
 npm install
 npm run build
@@ -56,4 +56,3 @@ cordova run android --device
 ```
 
 etc...
-
