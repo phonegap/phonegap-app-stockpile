@@ -10,6 +10,21 @@ A PhoneGap example app using [Vue.js](https://vuejs.org), [Framework7 (with Vue.
 ### Requirements
 
 - PhoneGap CLI: `npm install -g phonegap`
+- Adobe Stock API key
+  - TODO: Add Adobe Stock registration instructions
+
+#### Getting an Adobe Stock API key
+
+1. Start by visiting the [Adobe I/O Console](https://console.adobe.io/integrations) Integrations.
+2. Click "New Integration", then choose "Access an API" --Continue
+3. Next choose "Adobe Stock" and "OAuth Integration" below that -- Continue
+4. Choose "New integration" -- Continue
+5. Give your integration a name like "Stockpile" and a Description like "A test Adobe Stock integration with a PhoneGap app"
+6. Choose Web as the platform
+7. The Default redirect URI part is not used by this app, so put in any URL (preferably your own). I have used "https://phonegap.com" and "https://phonegap\.com" for the Redirect URI pattern.
+8. Prove you are not a robot, then click the Create integration button
+9. Your integration has been created. Click "Continue to integration details" to get your API key
+10. Your API key will be under "API Key (Client ID)" on the left. You'll need to use that instead of the dummy key in `Results.vue`
 
 ### Clone
 
