@@ -10,9 +10,6 @@
         </f7-col>
       </f7-grid>
     </f7-block>
-    <!-- Photo Browser -->
-    <!-- @TODO Add custom navbar template to allow Favorites -->
-    <f7-photo-browser ref="photoBrowser" :photos="photos"></f7-photo-browser>
   </f7-page>
 </template>
 
