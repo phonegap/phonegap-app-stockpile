@@ -6,7 +6,7 @@
     <f7-block>
       <f7-grid v-for="i in Math.ceil(images.length / 3)" key="i">
         <f7-col width="33" v-for="image in images.slice((i - 1) * 3, i * 3)" key="image.id">
-          <img @click="() => onImageClick(image.id)" :src="image.thumbnail_url" style="width: 100%" />
+          <img class="result-image" @click="() => onImageClick(image.id)" :src="image.thumbnail_url" />
         </f7-col>
       </f7-grid>
     </f7-block>
@@ -58,7 +58,6 @@
         const index = this.photos.findIndex(element => {
           return element.id === id;
         });
-        console.log(index);
         const albumPhotoBrowser = this.$f7.photoBrowser({
           photos: this.photos,
           type: 'page',
@@ -95,5 +94,8 @@
 <style scoped>
   .row {
     margin-bottom: 5px;
+  }
+  .result-image {
+    width: 100%;
   }
 </style>
