@@ -12,7 +12,14 @@
     <f7-views>
       <!-- Right view, it is main view-->
       <!-- Defaults to "/" route -->
-      <f7-view url="/" :init="true" id="main-view" :dynamic-navbar="true" navbar-through main>
+      <f7-view
+        url="/"
+        :init="true"
+        id="main-view"
+        :dynamic-navbar="true"
+        navbar-through
+        main
+      >
         <!-- Pages-->
         <f7-pages>
           <!-- Page, data-page contains page name-->

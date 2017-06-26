@@ -5,18 +5,18 @@ import Framework7 from 'framework7'; // eslint-disable-line no-unused-vars
 // Import F7 Vue Plugin
 import Framework7Vue from 'framework7-vue';
 
-import Home from '@/components/pages/Home';
+import Search from '@/components/pages/Search';
 
 // Init F7 Vue Plugin
 Vue.use(Framework7Vue);
 
-let vm;
+let vm; // eslint-disable-line no-unused-vars
 
-describe('Home.vue', () => {
+describe('Search.vue', () => {
   beforeEach(() => {
     vm = new Vue({ // eslint-disable-line no-new
       el: document.createElement('div'),
-      render: h => h(Home),
+      render: h => h(Search),
       // Init Framework7 by passing parameters here
       // The absolute minimum is an empty routes array
       framework7: {
@@ -26,18 +26,11 @@ describe('Home.vue', () => {
   });
 
   describe('Data', () => {
-    it('should have a name of "Home"', () => {
-      expect(Home.name).to.equal('Home');
+    it('should have a name of "Search"', () => {
+      expect(Search.name).to.equal('Search');
     });
     it('should have a data method', () => {
-      expect(Home.data).to.be.a('function');
-    });
-    it('should have a data method that returns a title of "Home Page"', () => {
-      expect(Home.data().title).to.equal('Home Page');
-    });
-    it('should have a content-block-title that displays `data().title`', () => {
-      expect(vm.$el.querySelector('.content-block-title').textContent)
-        .to.equal(Home.data().title);
+      expect(Search.data).to.be.a('function');
     });
   });
 });
