@@ -24,7 +24,7 @@ A PhoneGap example app using [Vue.js](https://vuejs.org), [Framework7 (with Vue.
 7. The Default redirect URI part is not used by this app, so put in any URL (preferably your own). I have used "https://phonegap.com" and "https://phonegap\.com" for the Redirect URI pattern.
 8. Prove you are not a robot, then click the Create integration button
 9. Your integration has been created. Click "Continue to integration details" to get your API key
-10. Your API key will be under "API Key (Client ID)" on the left. You'll need to use that instead of the dummy key in `Results.vue`
+10. Your API key will be under "API Key (Client ID)" on the left. You'll need to use that instead of the dummy key in `src/config.js`
 
 ### Clone
 

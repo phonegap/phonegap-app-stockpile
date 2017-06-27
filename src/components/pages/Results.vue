@@ -23,6 +23,7 @@
 
 <script>
   /* global store fetch */
+  import { apiHeaders } from '../../config';
 
   export default {
     name: 'Results',
@@ -34,13 +35,8 @@
         let { q = 'cats' } = this.$route.params;
         const { limit = 23, filter = 'words' } = this.$route.params; // eslint-disable-line no-unused-vars
         const apiURL =
-          `https://stock.adobe.io/Rest/Media/1/Search/Files?\
-            search_parameters[limit]=${limit}&search_parameters[${filter}]=${q}`;
-        const myHeaders = new Headers({
-          'x-api-key': '*********************', // replace with your api-key
-          'X-Product': 'Stockpile/0.0.1'
-        });
-        console.log(filter);
+          `https://stock.adobe.io/Rest/Media/1/Search/Files?search_parameters[limit]=${limit}&search_parameters[${filter}]=${q}`;
+        const myHeaders = new Headers(apiHeaders);
         const myInit = {
           method: 'GET',
           headers: myHeaders
