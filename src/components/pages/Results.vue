@@ -33,9 +33,25 @@
     methods: {
       fetchResults () {
         let { q = 'cats' } = this.$route.params;
-        const { limit = 23, filter = 'words' } = this.$route.params; // eslint-disable-line no-unused-vars
+        const { limit = 23, filter = 'words' } = this.$route.params;
+        const apiBase = 'https://stock.adobe.io/Rest/Media/1/Search/Files';
+        const searchParams = [
+          { key: 'thumbnail_size', val: '160' },
+          { key: 'limit', val: limit },
+          { key: filter, val: q }
+        ]
+          .map(param => `search_parameters[${param.key}]=${param.val}`)
+          .join('&');
+        const resultColumns = [
+          'nb_results',
+          'id',
+          'title',
+          'thumbnail_url',
+          'thumbnail_1000_url'
+        ]
+          .join('&result_columns[]=');
         const apiURL =
-          `https://stock.adobe.io/Rest/Media/1/Search/Files?search_parameters[limit]=${limit}&search_parameters[${filter}]=${q}`;
+          `${apiBase}?result_columns[]=${resultColumns}&${searchParams}`;
         const myHeaders = new Headers(apiHeaders);
         const myInit = {
           method: 'GET',
@@ -46,14 +62,12 @@
           .then((json) => {
             store.totalReturned = json.nb_results;
             store.images = json.files;
-            console.log(store.images);
             // reduce the images by id
             store.imagesById = store.images.reduce((a, b) => {
               const c = a;
               c[b.id] = b;
               return c;
             }, {});
-            console.log(store);
             this.$f7.hidePreloader();
           }).catch((ex) => {
             console.log('fetching failed', ex);
@@ -69,6 +83,8 @@
           type: 'page',
           backLinkText: 'Results',
           lazyLoading: true,
+          lazyLoadingInPrevNext: true,
+          lazyLoadingOnTransitionStart: true,
           initialSlide: index || 0
         });
         albumPhotoBrowser.open();
@@ -87,7 +103,7 @@
         return this.images.map(image => {
           return {
             id: image.id,
-            url: image.thumbnail_url,
+            url: image.thumbnail_1000_url,
             caption: image.title
           };
         });
