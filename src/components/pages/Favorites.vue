@@ -26,6 +26,9 @@
       return {
         title: 'Favorites Page'
       };
+    },
+    created () {
+      window.f7.mainView.history = ['/favorites/'];
     }
   };
 </script>

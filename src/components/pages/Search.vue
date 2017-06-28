@@ -7,12 +7,12 @@
       <f7-nav-center sliding>{{ title }}</f7-nav-center>
     </f7-navbar>
     <!-- Scrollable page content-->
-    <form form method="GET" id="search-form" @submit.prevent="onSubmit">
+    <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
 	    <f7-list>
         <f7-list-item>
           <f7-input type="text" name="q"
-          placeholder="image search" ref="searchInput"
-          autocorrect="off" autocapitalize="off"  />
+            placeholder="image search" ref="searchInput"
+            autocorrect="off" autocapitalize="off"  />
         </f7-list-item>
       </f7-list>
       <f7-block>
@@ -37,8 +37,8 @@
     },
     methods: {
       onSubmit () {
-        const { filter, limit, q } = this.$f7.formToJSON('#search-form');
-        const { searchInput } = this.$refs;
+        const { searchInput, searchForm } = this.$refs;
+        const { filter, limit, q } = this.$f7.formToJSON(searchForm);
         const { router } = this.$f7.mainView;
         const input = searchInput.$el.querySelector('input');
 
@@ -50,6 +50,9 @@
         }
         router.loadPage(`/results/${filter || 'words'}/${limit}/${q}`);
       }
+    },
+    created () {
+      window.f7.mainView.history = ['/'];
     }
   };
 </script>
