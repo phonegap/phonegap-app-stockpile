@@ -22,8 +22,8 @@
 </template>
 
 <script>
-  /* global store fetch */
-  import { apiHeaders } from '../../config';
+  /* global store */
+  import fetchStockAPIJSON from '../../utils/stockAPI';
 
   export default {
     name: 'Results',
@@ -34,32 +34,20 @@
       fetchResults () {
         let { q = 'cats' } = this.$route.params;
         const { limit = 23, filter = 'words' } = this.$route.params;
-        const apiBase = 'https://stock.adobe.io/Rest/Media/1/Search/Files';
-        const searchParams = [
-          { key: 'thumbnail_size', val: '160' },
-          { key: 'limit', val: limit },
-          { key: filter, val: q }
-        ]
-          .map(param => `search_parameters[${param.key}]=${param.val}`)
-          .join('&');
-        const resultColumns = [
+        const columns = [
           'nb_results',
           'id',
           'title',
           'thumbnail_url',
           'thumbnail_1000_url'
-        ]
-          .join('&result_columns[]=');
-        const apiURL =
-          `${apiBase}?result_columns[]=${resultColumns}&${searchParams}`;
-        const myHeaders = new Headers(apiHeaders);
-        const myInit = {
-          method: 'GET',
-          headers: myHeaders
-        };
-        fetch(apiURL, myInit)
-          .then(response => response.json())
-          .then((json) => {
+        ];
+        const parameters = [
+          { key: 'thumbnail_size', val: '160' },
+          { key: 'limit', val: limit },
+          { key: filter, val: q }
+        ];
+        fetchStockAPIJSON({ columns, parameters })
+          .then(json => {
             store.totalReturned = json.nb_results;
             store.images = json.files;
             // reduce the images by id
@@ -69,7 +57,7 @@
               return c;
             }, {});
             this.$f7.hidePreloader();
-          }).catch((ex) => {
+          }).catch(ex => {
             console.log('fetching failed', ex);
             this.$f7.hidePreloader();
           });
