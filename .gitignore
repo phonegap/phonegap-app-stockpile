@@ -1,4 +1,4 @@
-src/config.js
+src/utils/config.js
 
 .DS_Store
 node_modules/
