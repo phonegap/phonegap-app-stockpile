@@ -28,7 +28,7 @@
       };
     },
     created () {
-      window.f7.mainView.history = ['/favorites/'];
+      this.$f7.mainView.history = ['/favorites/'];
     }
   };
 </script>

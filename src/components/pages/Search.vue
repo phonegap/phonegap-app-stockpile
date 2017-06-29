@@ -8,7 +8,7 @@
     </f7-navbar>
     <!-- Scrollable page content-->
     <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
-	    <f7-list>
+      <f7-list>
         <f7-list-item>
           <f7-input type="text" name="q"
             placeholder="image search" ref="searchInput"
@@ -17,13 +17,13 @@
       </f7-list>
       <f7-block>
         <input type="hidden" name="limit" value="23" />
-    		<input
+        <input
           type="submit"
           class="button button-big button-fill search-submit"
           value="Find Tracks"
         />
-   		</f7-block>
-		</form>
+       </f7-block>
+    </form>
   </f7-page>
 </template>
 
@@ -52,7 +52,7 @@
       }
     },
     created () {
-      window.f7.mainView.history = ['/'];
+      this.$f7.mainView.history = ['/'];
     }
   };
 </script>
