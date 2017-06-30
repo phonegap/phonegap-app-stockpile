@@ -4,11 +4,12 @@ import { apiHeaders } from './config';
 
 const apiBase = 'https://stock.adobe.io/Rest/Media/1/Search/Files';
 
-function formatResultColumns (columns) {
+export function formatResultColumns (columns) {
+  if (columns.length < 1) return '';
   return `result_columns[]=${columns.join('&result_columns[]=')}`;
 }
 
-function formatSearchParameters (parameters) {
+export function formatSearchParameters (parameters) {
   return parameters
     .map(param => `search_parameters[${param.key}]=${param.val}`)
     .join('&');
