@@ -20,7 +20,7 @@
         <input
           type="submit"
           class="button button-big button-fill search-submit"
-          value="Find Tracks"
+          value="Find Images"
         />
        </f7-block>
     </form>
