@@ -8,24 +8,46 @@
         Favorites
       </f7-nav-center>
     </f7-navbar>
-    <!-- Scrollable page content-->
-    <f7-block-title>{{ title }}</f7-block-title>
-    <f7-block inner>
-      Lorem ipsum dolor sit amet, consectetur adipisicing elit.
-      Distinctio est aliquam officiis quaerat placeat, cum explicabo magni
-      soluta totam maxime autem minima accusamus eos suscipit dignissimos
-      corporis modi voluptatum fugiat!
-    </f7-block>
+    <f7-list media-list v-if="hasFavorites">
+      <f7-list-item v-for="favorite in favorites"
+        :key="favorite.id"
+        @click="clickItem(favorite.id)"
+        :link="`/results/details/${favorite.id}`"
+        :media="mediaItemImage(favorite.thumbnail_url)"
+        :title="favorite.title"
+        :text="formatDate(favorite.creation_date)"
+        :subtitle="favorite.category.name"
+      />
+      </f7-list>
   </f7-page>
 </template>
 
 <script>
+  /* global store */
+  import moment from 'moment';
+
   export default {
     name: 'Favorites',
     data () {
-      return {
-        title: 'Favorites Page'
-      };
+      return store;
+    },
+    methods: {
+      mediaItemImage (url) {
+        return `<img width="80" src="${url}" />`;
+      },
+      clickItem (id) {
+        this.$f7.mainView.router
+          .loadPage(`/results/details/${id}?displayingFavorite=true`);
+      },
+      formatDate (date) {
+        const created = moment(date);
+        return `Created: ${created.format('MMMM Do YYYY')}`;
+      }
+    },
+    computed: {
+      hasFavorites () {
+        return !!this.favorites.length;
+      }
     },
     created () {
       this.$f7.mainView.history = ['/favorites/'];

@@ -13,11 +13,17 @@ import Framework7 from 'framework7';
 // Import F7 Vue Plugin
 import Framework7Vue from 'framework7-vue';
 
+// Import the Framework7 Icons
+import Framework7Icons from 'framework7-icons/css/framework7-icons.css';
+
 // Import Routes
 import Routes from './routes';
 
 // Import App
 import App from './App';
+
+// Import utils
+import { fetchFavoritesFromLocalStorage } from './utils/favorites';
 
 // Set up some useful globals
 window.isMaterial = !window.Framework7.prototype.device.ios;
@@ -88,8 +94,18 @@ document.addEventListener('deviceready', () => {
   document.addEventListener('backbutton', handleBackButton);
 });
 
+// Set up a global store
+const favorites = fetchFavoritesFromLocalStorage();
+const favoritesById = favorites.reduce((a, b) => {
+  const c = a;
+  c[b.id] = b;
+  return c;
+}, {});
+
 // Global store defaults
 window.store = {
   images: [],
-  imagesById: {}
+  imagesById: {},
+  favorites,
+  favoritesById
 };

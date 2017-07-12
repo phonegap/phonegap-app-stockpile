@@ -39,7 +39,15 @@
           'id',
           'title',
           'thumbnail_url',
-          'thumbnail_1000_url'
+          'thumbnail_500_url',
+          'thumbnail_1000_url',
+          'content_type',
+          'creation_date',
+          'creator_name',
+          'category',
+          'description',
+          'content_type',
+          'keywords'
         ];
         const parameters = [
           { key: 'thumbnail_size', val: '160' },
@@ -63,6 +71,9 @@
           });
       },
       onImageClick (id) {
+        const { mainView: { router } } = this.$f7;
+        router.loadPage(`/results/details/${id}`);
+        /*
         const index = this.photos.findIndex(element => {
           return element.id === id;
         });
@@ -76,6 +87,7 @@
           initialSlide: index || 0
         });
         albumPhotoBrowser.open();
+        */
       }
     },
     computed: {
