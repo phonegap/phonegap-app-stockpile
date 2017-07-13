@@ -12,19 +12,29 @@
       <f7-list-item v-for="favorite in favorites"
         :key="favorite.id"
         @click="clickItem(favorite.id)"
+        @swipeout:deleted="onSwipeoutDeleted(favorite)"
         :link="`/results/details/${favorite.id}`"
         :media="mediaItemImage(favorite.thumbnail_url)"
         :title="favorite.title"
         :text="formatDate(favorite.creation_date)"
         :subtitle="favorite.category.name"
-      />
-      </f7-list>
+        swipeout
+      >
+        <f7-swipeout-actions>
+          <f7-swipeout-button delete>Delete</f7-swipeout-button>
+        </f7-swipeout-actions>
+      </f7-list-item>
+    </f7-list>
+    <f7-content-block v-else>
+      <p>You have no favorites saved. Search for something then use the star icon to save a favorite</p>
+    </f7-content-block>
   </f7-page>
 </template>
 
 <script>
   /* global store */
   import moment from 'moment';
+  import { toggleFavorite } from '../../utils/favorites';
 
   export default {
     name: 'Favorites',
@@ -42,6 +52,9 @@
       formatDate (date) {
         const created = moment(date);
         return `Created: ${created.format('MMMM Do YYYY')}`;
+      },
+      onSwipeoutDeleted (favorite) {
+        toggleFavorite(favorite);
       }
     },
     computed: {

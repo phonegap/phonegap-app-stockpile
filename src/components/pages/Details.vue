@@ -1,6 +1,6 @@
 <template>
   <f7-page name="details">
-    <f7-navbar back-link="Results" sliding>
+    <f7-navbar :back-link="backLink" sliding>
       <f7-nav-center>
         Details
       </f7-nav-center>
@@ -10,13 +10,22 @@
       </f7-nav-right>
     </f7-navbar>
     <f7-card>
-      <f7-card-content>
+      <f7-card-header>
         <div class="img-container" :style="imgBackground()" @click="loadInPhotoBrowser">
           <div class="img-container-inner" :style="imgBackground(500)"></div>
+          <div class="caption">{{item.title}}</div>
         </div>
+      </f7-card-header>
+      <f7-card-content>
+        <f7-list>
+          <f7-list-item title="Category" :after="item.category.name" :link="categoryLink"></f7-list-item>
+          <f7-list-item title="Created by" :after="item.creator_name" :link="creatorLink"></f7-list-item>
+          <f7-list-item title="Creation date" :after="creationDate"></f7-list-item>
+        </f7-list>
       </f7-card-content>
       <f7-card-footer>
-        {{item.title}}
+        <f7-link :href="item.comp_url" external>Download Comp</f7-link>
+        <f7-link :href="findMoreLink">Find Similar</f7-link>
       </f7-card-footer>
     </f7-card>
     <f7-photo-browser
@@ -32,6 +41,7 @@
 <script>
   /* global store */
 
+  import moment from 'moment';
   import { toggleFavorite } from '../../utils/favorites';
 
   export default {
@@ -54,7 +64,8 @@
       },
       imgBackground (size = 0) {
         const url = size > 0 ? `thumbnail_${size}_url` : 'thumbnail_url';
-        return `background-image: url(${this.item[url]})`;
+        if (this.item[url]) this[url] = this.item[url];
+        return `background-image: url(${this[url]})`;
       },
       loadInPhotoBrowser () {
         this.$refs.pb.open();
@@ -70,13 +81,33 @@
         return !!displayingFavorite;
       },
       item () {
-        let item;
+        // Fallback default for when the store is reset
+        // note: thumbnail_500_url and thumbnail_url are covered by imgBackground()
+        const item = {
+          category: '',
+          creation_date: '',
+          creator_id: ''
+        };
         if (this.displayingFavorite) {
-          item = this.favoritesById[this.id];
-        } else {
-          item = this.imagesById[this.id];
+          return Object.assign(item, this.favoritesById[this.id]);
         }
-        return item;
+        return Object.assign(item, this.imagesById[this.id]);
+      },
+      backLink () {
+        if (this.displayingFavorite) {
+          return 'Favorites';
+        } else {
+          return 'Results';
+        }
+      },
+      findMoreLink () {
+        return `/results/similar/23/${this.item.id}/details`;
+      },
+      categoryLink () {
+        return `/results/category/23/${this.item.category.id}/details`;
+      },
+      creatorLink () {
+        return `/results/creator_id/23/${this.item.creator_id}/details`;
       },
       isFavorite () {
         const filteredFavorites =
@@ -87,9 +118,13 @@
         return [
           {
             url: this.item.thumbnail_1000_url,
-            caption: this.item.title
+            caption: this.item.title || ''
           }
         ];
+      },
+      creationDate () {
+        const created = moment(this.item.creation_date);
+        return created.format('MMMM Do YYYY');
       }
     }
   };
@@ -110,7 +145,6 @@
     background-repeat: no-repeat;
     background-position: center center;
   }
-
   .img-container-inner {
     position:absolute;
     top: 50%;
@@ -121,5 +155,15 @@
     background-repeat: no-repeat;
     background-position: center center;
     z-index: 2;
+  }
+  .caption {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(0,0,0,0.3);
+    color: white;
+    padding: 8px 16px;
+    z-index: 3;
   }
 </style>

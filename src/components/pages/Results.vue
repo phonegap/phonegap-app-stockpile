@@ -1,6 +1,6 @@
 <template>
-  <f7-page name="results">
-    <f7-navbar sliding back-link="Search" title="Results"></f7-navbar>
+  <f7-page name="results" @page:reinit="onPageReinit">
+    <f7-navbar sliding :back-link="backLink" title="Results"></f7-navbar>
     <!-- Scrollable page content-->
     <f7-block-title>{{ imagesReturned }}</f7-block-title>
     <f7-block>
@@ -22,18 +22,17 @@
 </template>
 
 <script>
-  /* global store */
   import fetchStockAPIJSON from '../../utils/stockAPI';
 
   export default {
     name: 'Results',
     data () {
-      return store;
+      return {
+        images: []
+      };
     },
     methods: {
-      fetchResults () {
-        let { q = 'cats' } = this.$route.params;
-        const { limit = 23, filter = 'words' } = this.$route.params;
+      fetchResults (q, limit, filter) {
         const columns = [
           'nb_results',
           'id',
@@ -44,10 +43,12 @@
           'content_type',
           'creation_date',
           'creator_name',
+          'creator_id',
           'category',
           'description',
           'content_type',
-          'keywords'
+          'keywords',
+          'comp_url'
         ];
         const parameters = [
           { key: 'thumbnail_size', val: '160' },
@@ -56,14 +57,20 @@
         ];
         fetchStockAPIJSON({ columns, parameters })
           .then(json => {
-            store.totalReturned = json.nb_results;
-            store.images = json.files;
+            this.totalReturned = json.nb_results;
+            this.images = json.files;
             // reduce the images by id
-            store.imagesById = store.images.reduce((a, b) => {
+            this.imagesById = this.images.reduce((a, b) => {
               const c = a;
               c[b.id] = b;
               return c;
             }, {});
+            // Load the data for this page into the store
+            Object.assign(window.store, {
+              images: this.images,
+              imagesById: this.imagesById,
+              totalReturned: this.totalReturned
+            });
             this.$f7.hidePreloader();
           }).catch(ex => {
             console.log('fetching failed', ex);
@@ -73,31 +80,36 @@
       onImageClick (id) {
         const { mainView: { router } } = this.$f7;
         router.loadPage(`/results/details/${id}`);
-        /*
-        const index = this.photos.findIndex(element => {
-          return element.id === id;
+      },
+      onPageReinit () {
+        // Load the data for this page back into the store
+        Object.assign(window.store, {
+          images: this.images,
+          imagesById: this.imagesById,
+          totalReturned: this.totalReturned
         });
-        const albumPhotoBrowser = this.$f7.photoBrowser({
-          photos: this.photos,
-          type: 'page',
-          backLinkText: 'Results',
-          lazyLoading: true,
-          lazyLoadingInPrevNext: true,
-          lazyLoadingOnTransitionStart: true,
-          initialSlide: index || 0
-        });
-        albumPhotoBrowser.open();
-        */
       }
     },
     computed: {
+      backLink () {
+        const { referrer } = this.$route.params;
+        return referrer === 'details' ? 'Details' : 'Search';
+      },
       imagesReturned () {
-        const { q } = this.$route.params;
+        const { q } = this;
+        const { filter } = this.$route.params;
+        if (!this.images) return '';
         const moreThan =
           this.totalReturned && this.images.length < this.totalReturned
             ? 'More than '
             : '';
-        return this.images ? `${moreThan}${this.images.length} results for "${q}"` : '';
+        if (filter === 'similar') {
+          return this.images.length ? `${moreThan}${this.images.length} similar results to ${q}` : '';
+        }
+        if (filter === 'creator_id') {
+          return this.images.length ? `${moreThan}${this.images.length} results for ${this.images[0].creator_name}` : '';
+        }
+        return this.images.length ? `${moreThan}${this.images.length} results for "${q}"` : '';
       },
       photos () {
         return this.images.map(image => {
@@ -109,10 +121,11 @@
         });
       }
     },
-    created () {
-      this.$f7.showPreloader('Searching');
+    mounted () {
       this.images = [];
-      this.fetchResults();
+      Object.assign(this, this.$route.params);
+      this.$f7.showPreloader('Searching');
+      this.fetchResults(this.q, this.limit, this.filter);
     }
   };
 </script>

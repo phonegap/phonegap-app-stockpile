@@ -10,18 +10,16 @@
     <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
       <f7-list>
         <f7-list-item>
-          <f7-input type="text" name="q"
-            placeholder="image search" ref="searchInput"
+          <f7-label floating v-if="isMaterial">Image search</f7-label>
+          <f7-input type="search" name="q"
+            placeholder="Image search" ref="searchInput"
             autocorrect="off" autocapitalize="off"  />
         </f7-list-item>
       </f7-list>
       <f7-block>
         <input type="hidden" name="limit" value="23" />
-        <input
-          type="submit"
-          class="button button-big button-fill search-submit"
-          value="Find Images"
-        />
+        <input type="submit" name="submit" class="hidden" value="Find Images" />
+        <f7-button @click.prevent="onSubmit" big raised fill>Find Images</f7-button>
        </f7-block>
     </form>
   </f7-page>
@@ -48,7 +46,12 @@
           this.$f7.alert('Please enter a search term', 'Search Error');
           return;
         }
-        router.loadPage(`/results/${filter || 'words'}/${limit}/${q}`);
+        router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/search`);
+      }
+    },
+    computed: {
+      isMaterial () {
+        return window.isMaterial;
       }
     },
     created () {
@@ -56,3 +59,9 @@
     }
   };
 </script>
+
+<style scoped>
+  .hidden {
+    display: none;
+  }
+</style>
