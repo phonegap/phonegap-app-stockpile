@@ -81,17 +81,17 @@
         return !!displayingFavorite;
       },
       item () {
-        // Fallback default for when the store is reset
-        // note: thumbnail_500_url and thumbnail_url are covered by imgBackground()
-        const item = {
-          category: '',
-          creation_date: '',
-          creator_id: ''
-        };
+        // Fallback default for when images* and favorites* are reset in the store
         if (this.displayingFavorite) {
-          return Object.assign(item, this.favoritesById[this.id]);
+          if (this.favoritesById && this.favoritesById[this.id]) {
+            this.stockItem = Object.assign({}, this.stockItem, this.favoritesById[this.id]);
+          }
+          return this.stockItem;
         }
-        return Object.assign(item, this.imagesById[this.id]);
+        if (this.imagesById && this.imagesById[this.id]) {
+          this.stockItem = Object.assign({}, this.stockItem, this.imagesById[this.id]);
+        }
+        return this.stockItem;
       },
       backLink () {
         if (this.displayingFavorite) {
