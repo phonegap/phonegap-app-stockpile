@@ -2,7 +2,7 @@
   <f7-page name="search">
     <f7-navbar>
       <f7-nav-left sliding>
-        <f7-link icon="icon-bars" open-panel="left"></f7-link>
+        <f7-link icon-f7="bars" open-panel="left"></f7-link>
       </f7-nav-left>
       <f7-nav-center sliding>{{ title }}</f7-nav-center>
     </f7-navbar>
