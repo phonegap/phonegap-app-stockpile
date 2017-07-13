@@ -104,12 +104,19 @@
             ? 'More than '
             : '';
         if (filter === 'similar') {
-          return this.images.length ? `${moreThan}${this.images.length} similar results to ${q}` : '';
+          return this.images.length
+            ? `${moreThan}${this.images.length} similar results to ${q}`
+            : '';
         }
         if (filter === 'creator_id') {
-          return this.images.length ? `${moreThan}${this.images.length} results for ${this.images[0].creator_name}` : '';
+          const [ img ] = this.images;
+          return this.images.length
+            ? `${moreThan}${this.images.length} results for ${img.creator_name}`
+            : '';
         }
-        return this.images.length ? `${moreThan}${this.images.length} results for "${q}"` : '';
+        return this.images.length
+          ? `${moreThan}${this.images.length} results for "${q}"`
+          : '';
       },
       photos () {
         return this.images.map(image => {

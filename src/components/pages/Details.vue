@@ -5,22 +5,31 @@
         Details
       </f7-nav-center>
       <f7-nav-right>
-        <f7-link icon-f7="star_filled" @click="toggleFavorite" v-if="isFavorite" />
+        <f7-link icon-f7="star_filled" @click="toggleFavorite"
+          v-if="isFavorite"
+        />
         <f7-link icon-f7="star" @click="toggleFavorite" v-else />
       </f7-nav-right>
     </f7-navbar>
     <f7-card>
       <f7-card-header>
-        <div class="img-container" :style="imgBackground()" @click="loadInPhotoBrowser">
+        <div class="img-container" :style="imgBackground()"
+          @click="loadInPhotoBrowser"
+        >
           <div class="img-container-inner" :style="imgBackground(500)"></div>
           <div class="caption">{{item.title}}</div>
         </div>
       </f7-card-header>
       <f7-card-content>
         <f7-list>
-          <f7-list-item title="Category" :after="item.category.name" :link="categoryLink"></f7-list-item>
-          <f7-list-item title="Created by" :after="item.creator_name" :link="creatorLink"></f7-list-item>
-          <f7-list-item title="Creation date" :after="creationDate"></f7-list-item>
+          <f7-list-item title="Category" :after="item.category.name"
+            :link="categoryLink"
+          ></f7-list-item>
+          <f7-list-item
+            title="Created by" :after="item.creator_name" :link="creatorLink"
+          ></f7-list-item>
+          <f7-list-item
+            title="Creation date" :after="creationDate"></f7-list-item>
         </f7-list>
       </f7-card-content>
       <f7-card-footer>
@@ -82,15 +91,22 @@
         return !!displayingFavorite;
       },
       item () {
-        // Fallback default for when images* and favorites* are reset in the store
+        // Fallback default for when images* and favorites* are reset in
+        //  the store
         if (this.displayingFavorite) {
           if (this.favoritesById && this.favoritesById[this.id]) {
-            this.stockItem = Object.assign({}, this.stockItem, this.favoritesById[this.id]);
+            this.stockItem = Object.assign(
+              {},
+              this.stockItem,
+              this.favoritesById[this.id]);
           }
           return this.stockItem;
         }
         if (this.imagesById && this.imagesById[this.id]) {
-          this.stockItem = Object.assign({}, this.stockItem, this.imagesById[this.id]);
+          this.stockItem = Object.assign(
+            {},
+            this.stockItem,
+            this.imagesById[this.id]);
         }
         return this.stockItem;
       },

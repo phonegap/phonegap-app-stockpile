@@ -26,7 +26,10 @@
       </f7-list-item>
     </f7-list>
     <f7-content-block v-else>
-      <p>You have no favorites saved. Search for something then use the star icon to save a favorite</p>
+      <p>
+        You have no favorites saved. Search for something then use the
+        star icon to save a favorite
+      </p>
     </f7-content-block>
   </f7-page>
 </template>
