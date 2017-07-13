@@ -34,6 +34,7 @@
       :photos="photos"
       :lazyLoading="true"
       backLinkText="Details"
+      :toolbar="false"
     ></f7-photo-browser>
   </f7-page>
 </template>
