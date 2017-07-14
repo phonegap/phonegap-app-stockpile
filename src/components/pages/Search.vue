@@ -17,7 +17,7 @@
         </f7-list-item>
       </f7-list>
       <f7-block>
-        <input type="hidden" name="limit" value="23" />
+        <input type="hidden" name="limit" value="50" />
         <input type="submit" name="submit" class="hidden" value="Search" />
         <f7-button @click.prevent="onSubmit" big raised fill>
           Find Images

@@ -118,13 +118,13 @@
         }
       },
       findMoreLink () {
-        return `/results/similar/23/${this.item.id}/details`;
+        return `/results/similar/50/${this.item.id}/details`;
       },
       categoryLink () {
-        return `/results/category/23/${this.item.category.id}/details`;
+        return `/results/category/50/${this.item.category.id}/details`;
       },
       creatorLink () {
-        return `/results/creator_id/23/${this.item.creator_id}/details`;
+        return `/results/creator_id/50/${this.item.creator_id}/details`;
       },
       isFavorite () {
         const filteredFavorites =
