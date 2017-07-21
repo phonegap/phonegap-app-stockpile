@@ -54,7 +54,6 @@
           { key: filter, val: q },
           { key: 'offset', val: offset }
         ];
-        this.loading = true;
         fetchStockAPIJSON({ columns, parameters })
           .then(json => {
             if (json.nb_results >= this.totalReturned) {
@@ -75,8 +74,7 @@
               totalReturned: this.totalReturned
             });
             this.offset = offset + limit; // not working currently... bug in the API?
-            this.loading = false;
-            if (this.totalReturned === this.images.length) {
+            if (this.totalReturned === this.images.length || json.files.length === 0) {
               this.$$('.infinite-scroll-preloader').remove();
             }
           }).catch(ex => {
@@ -85,7 +83,6 @@
           });
       },
       onInfiniteScroll () {
-        if (this.loading) return;
         if (this.totalReturned === this.images.length) return;
         this.fetchResults(this.q, parseInt(this.limit), this.filter, parseInt(this.offset));
       },
