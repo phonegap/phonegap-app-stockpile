@@ -6,19 +6,15 @@
     <!-- Scrollable page content-->
     <f7-block-title>{{ imagesReturned }}</f7-block-title>
     <f7-block>
-      <f7-grid v-for="i in Math.ceil(images.length / 3)" key="i">
-        <f7-col
-          width="33"
-          v-for="image in images.slice((i - 1) * 3, i * 3)"
-          key="image.id"
-        >
+      <div class="grid">
+        <div class="cell" v-for="image in images">
           <img
             class="result-image"
             @click="() => onImageClick(image.id)"
             :src="image.thumbnail_url"
          />
-        </f7-col>
-      </f7-grid>
+        </div>
+      </div>
     </f7-block>
   </f7-page>
 </template>
@@ -78,7 +74,7 @@
               imagesById: this.imagesById,
               totalReturned: this.totalReturned
             });
-            this.offset = this.offset + json.files.length;
+            this.offset = offset + limit; // not working currently... bug in the API?
             this.loading = false;
             if (this.totalReturned === this.images.length) {
               this.$$('.infinite-scroll-preloader').remove();
@@ -91,7 +87,7 @@
       onInfiniteScroll () {
         if (this.loading) return;
         if (this.totalReturned === this.images.length) return;
-        this.fetchResults(this.q, this.limit, this.filter, this.offset);
+        this.fetchResults(this.q, parseInt(this.limit), this.filter, parseInt(this.offset));
       },
       onImageClick (id) {
         const { mainView: { router } } = this.$f7;
@@ -146,16 +142,39 @@
       this.images = [];
       this.totalReturned = 0;
       Object.assign(this, this.$route.params);
-      this.fetchResults(this.q, this.limit, this.filter, this.offset);
+      this.fetchResults(this.q, parseInt(this.limit), this.filter, parseInt(this.offset));
     }
   };
 </script>
 
 <style scoped>
-  .row {
-    margin-bottom: 5px;
-  }
-  .result-image {
+  /* default for phones / portrait */
+  .cell img {
+    display: block;
     width: 100%;
+  }
+  .grid {
+    background: #fff;
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row;
+  }
+  .cell {
+    background: #fcfcfc;
+    box-sizing: border-box;
+    margin: 4px;
+    width: calc(33% - 8px);
+  }
+  /* tablets landscape */
+  @media screen and (min-width: 960px) {
+    .cell {
+      width: calc(25% - 8px);
+    }
+  }
+  /* desktop */
+  @media screen and (min-width: 1200px) {
+    .cell {
+      width: calc(20% - 8px);
+    }
   }
 </style>
