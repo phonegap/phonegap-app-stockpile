@@ -9,7 +9,6 @@
       <div class="grid">
         <div class="cell" v-for="image in images">
           <img
-            class="result-image"
             @click="() => onImageClick(image.id)"
             :src="image.thumbnail_url"
          />
@@ -32,21 +31,10 @@
     methods: {
       fetchResults (q, limit, filter, offset = 0) {
         const columns = [
-          'nb_results',
-          'id',
-          'title',
-          'thumbnail_url',
-          'thumbnail_500_url',
-          'thumbnail_1000_url',
-          'content_type',
-          'creation_date',
-          'creator_name',
-          'creator_id',
-          'category',
-          'description',
-          'content_type',
-          'keywords',
-          'comp_url'
+          'nb_results', 'id', 'title', 'thumbnail_url', 'thumbnail_500_url',
+          'thumbnail_1000_url', 'content_type', 'creation_date',
+          'creator_name', 'creator_id', 'category', 'description',
+          'content_type', 'keywords', 'comp_url'
         ];
         const parameters = [
           { key: 'thumbnail_size', val: '160' },
@@ -54,27 +42,38 @@
           { key: filter, val: q },
           { key: 'offset', val: offset }
         ];
+
         fetchStockAPIJSON({ columns, parameters })
           .then(json => {
             if (json.nb_results >= this.totalReturned) {
               this.totalReturned = json.nb_results;
             }
+
+            // merge the two arrays adding in the new results
             this.images = this.images.concat(json.files);
-            // reduce the images by id
+
+            // reduce the images array into an object referenced by id...
             const imagesById = this.images.reduce((a, b) => {
               const c = a;
               c[b.id] = b;
               return c;
             }, {});
+            // ...then merge with existing imagesById
             this.imagesById = Object.assign({}, this.imagesById, imagesById);
-            // Load the data for this page into the store
+
+            // update the store
+            // merging new and existing data using Object.assign()
             window.store = Object.assign(window.store, {
               images: this.images,
               imagesById: this.imagesById,
               totalReturned: this.totalReturned
             });
-            this.offset = offset + limit; // not working currently... bug in the API?
-            if (this.totalReturned === this.images.length || json.files.length === 0) {
+
+            // set the new offset
+            this.offset = offset + limit; // not working currently...see: issue #4
+
+            // remove the spinning preloader if we have all the results
+            if (json.files.length === 0) {
               this.$$('.infinite-scroll-preloader').remove();
             }
           }).catch(ex => {
@@ -83,15 +82,20 @@
           });
       },
       onInfiniteScroll () {
-        if (this.totalReturned === this.images.length) return;
-        this.fetchResults(this.q, parseInt(this.limit), this.filter, parseInt(this.offset));
+        const limit = parseInt(this.limit, 10);
+        const offset = parseInt(this.offset, 10);
+        if (this.totalReturned === this.images.length) {
+          return;
+        }
+        this.fetchResults(this.q, limit, this.filter, offset);
       },
       onImageClick (id) {
+        // route to the details page
         const { mainView: { router } } = this.$f7;
         router.loadPage(`/results/details/${id}`);
       },
       onPageReinit () {
-        // Load the data for this page back into the store
+        // load the data for this page back into the store
         Object.assign(window.store, {
           images: this.images,
           imagesById: this.imagesById,
@@ -101,13 +105,17 @@
     },
     computed: {
       backLink () {
+        // back link label for iOS
         const { referrer } = this.$route.params;
         return referrer === 'details' ? 'Details' : 'Search';
       },
       imagesReturned () {
+        // build the string to display for the number of results
         const { q } = this;
         const { filter } = this.$route.params;
-        if (!this.images) return '';
+        if (!this.images) {
+          return '';
+        }
         if (filter === 'similar') {
           return this.images.length
             ? `${this.totalReturned} similar results to ${q}`
@@ -119,27 +127,20 @@
             ? `${this.totalReturned} results for ${img.creator_name}`
             : '';
         }
+        // default
         return this.images.length
           ? `${this.totalReturned} results for "${q}"`
           : '';
-      },
-      photos () {
-        return this.images.map(image => {
-          return {
-            id: image.id,
-            url: image.thumbnail_1000_url,
-            caption: image.title
-          };
-        });
       }
     },
     mounted () {
-      this.loading = true;
-      this.offset = 0;
+      // set some initial defaults
+      Object.assign(this, this.$route.params);
+      this.offset = parseInt(this.offset, 10) || 0;
+      this.limit = parseInt(this.limit, 10) || 60;
       this.images = [];
       this.totalReturned = 0;
-      Object.assign(this, this.$route.params);
-      this.fetchResults(this.q, parseInt(this.limit), this.filter, parseInt(this.offset));
+      this.fetchResults(this.q, this.limit, this.filter, this.offset);
     }
   };
 </script>
@@ -162,7 +163,7 @@
     margin: 4px;
     width: calc(33% - 8px);
   }
-  /* tablets landscape */
+  /* tablets / landscape */
   @media screen and (min-width: 960px) {
     .cell {
       width: calc(25% - 8px);
