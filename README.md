@@ -5,6 +5,8 @@ Stockpile
 
 A PhoneGap example app using [Vue.js](https://vuejs.org), [Framework7 (with Vue.js bindings)](http://framework7.io/vue) and the [Adobe Stock API](https://www.adobe.io/apis/creativecloud/stock/).
 
+![Stockpile Icon](https://raw.githubusercontent.com/phonegap/phonegap-app-stockpile/master/res/icon/ios/icon-83.5%402x.png "Stockpile Icon")
+
 ## Previewing the app
 
 ### Requirements
