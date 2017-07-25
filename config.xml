@@ -55,6 +55,7 @@
         <icon height="87" src="res/icon/ios/icon-small@3x.png" width="87" />
         <icon height="50" src="res/icon/ios/icon-50.png" width="50" />
         <icon height="100" src="res/icon/ios/icon-50@2x.png" width="100" />
+        <icon height="167" src="res/icon/ios/icon-83.5@2x.png" width="167" />
         <splash height="480" src="res/screen/ios/Default~iphone.png" width="320" />
         <splash height="960" src="res/screen/ios/Default@2x~iphone.png" width="640" />
         <splash height="1024" src="res/screen/ios/Default-Portrait~ipad.png" width="768" />
