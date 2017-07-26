@@ -13,10 +13,15 @@
           <f7-label floating v-if="isMaterial">Image search</f7-label>
           <f7-input type="search" name="q"
             placeholder="Image search" ref="searchInput"
-            autocorrect="off" autocapitalize="off"  />
+            autocorrect="off" autocapitalize="off" />
         </f7-list-item>
       </f7-list>
+      <img src="" id="showPhoto" width="300">
+      <f7-button @click="getPicture">
+        Camera
+      </f7-button>
       <f7-block>
+        <input @change="onChange" ref="pictureSrc" type="file" capture="camera" accept="image/*" class="hidden" />
         <input type="hidden" name="limit" value="60" />
         <input type="submit" name="submit" class="hidden" value="Search" />
         <f7-button @click.prevent="onSubmit" big raised fill>
@@ -37,18 +42,35 @@
     },
     methods: {
       onSubmit () {
-        const { searchInput, searchForm } = this.$refs;
+        const { searchInput, searchForm, pictureSrc } = this.$refs;
         const { filter, limit, q } = this.$f7.formToJSON(searchForm);
         const { router } = this.$f7.mainView;
         const input = searchInput.$el.querySelector('input');
 
         input.blur();
 
-        if (!q.trim()) {
+        if (!q.trim() && !pictureSrc.value.trim()) {
           this.$f7.alert('Please enter a search term', 'Search Error');
           return;
         }
         router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/search`);
+      },
+      getPicture () {
+        const { pictureSrc } = this.$refs;
+        pictureSrc.click();
+      },
+      onChange (e) {
+        const file = e.target.files[0];
+        const reader = new FileReader();
+        // Closure to capture the file information.
+        reader.onload = (function (theFile) {
+          return function (e) {
+            const img = document.getElementById('showPhoto');
+            img.src = e.target.result;
+          };
+        })(file);
+        // Read in the image file as a data URL.
+        reader.readAsDataURL(file);
       }
     },
     computed: {
