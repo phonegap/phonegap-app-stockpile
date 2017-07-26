@@ -113,24 +113,26 @@
         // build the string to display for the number of results
         const { q } = this;
         const { filter } = this.$route.params;
-        if (!this.images) {
-          return '';
+        let message = '';
+        // wait for something to be returned
+        switch (filter) {
+          case 'similar':
+            message = this.images.length
+              ? `${this.totalReturned} similar results to ${q}`
+              : '';
+            break;
+          case 'creator_id':
+            const [ img ] = this.images;
+            message = this.images.length
+              ? `${this.totalReturned} results for ${img.creator_name}`
+              : '';
+            break;
+          default:
+            message = this.images.length
+              ? `${this.totalReturned} results for "${q}"`
+              : '';
         }
-        if (filter === 'similar') {
-          return this.images.length
-            ? `${this.totalReturned} similar results to ${q}`
-            : '';
-        }
-        if (filter === 'creator_id') {
-          const [ img ] = this.images;
-          return this.images.length
-            ? `${this.totalReturned} results for ${img.creator_name}`
-            : '';
-        }
-        // default
-        return this.images.length
-          ? `${this.totalReturned} results for "${q}"`
-          : '';
+        return message;
       }
     },
     mounted () {
