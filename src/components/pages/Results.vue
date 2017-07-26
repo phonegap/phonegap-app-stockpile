@@ -42,8 +42,9 @@
           { key: filter, val: q },
           { key: 'offset', val: offset }
         ];
+        const method = 'GET';
 
-        fetchStockAPIJSON({ columns, parameters })
+        fetchStockAPIJSON({ method, columns, parameters })
           .then(json => {
             if (json.nb_results >= this.totalReturned) {
               this.totalReturned = json.nb_results;
