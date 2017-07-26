@@ -43,17 +43,26 @@
     methods: {
       onSubmit () {
         const { searchInput, searchForm, pictureSrc } = this.$refs;
-        const { filter, limit, q } = this.$f7.formToJSON(searchForm);
+        let { filter, limit, q } = this.$f7.formToJSON(searchForm);
         const { router } = this.$f7.mainView;
         const input = searchInput.$el.querySelector('input');
 
+        let pic = encodeURIComponent(pictureSrc.value.trim());
+        if (!pic) {
+          pic = 'none';
+        } else {
+          q = 'similar image';
+        }
+
         input.blur();
 
-        if (!q.trim() && !pictureSrc.value.trim()) {
+        console.log(pic);
+
+        if (!q.trim() && (pic === 'none')) {
           this.$f7.alert('Please enter a search term', 'Search Error');
           return;
         }
-        router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/search`);
+        router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/${pic}/search`);
       },
       getPicture () {
         const { pictureSrc } = this.$refs;

@@ -29,7 +29,7 @@
       };
     },
     methods: {
-      fetchResults (q, limit, filter, offset = 0) {
+      fetchResults (q, limit, filter, offset = 0, pic) {
         const columns = [
           'nb_results', 'id', 'title', 'thumbnail_url', 'thumbnail_500_url',
           'thumbnail_1000_url', 'content_type', 'creation_date',
@@ -39,12 +39,21 @@
         const parameters = [
           { key: 'thumbnail_size', val: '160' },
           { key: 'limit', val: limit },
-          { key: filter, val: q },
           { key: 'offset', val: offset }
         ];
-        const method = 'GET';
 
-        fetchStockAPIJSON({ method, columns, parameters })
+        let method = '';
+        if (pic === 'none') {
+          method = 'GET';
+          parameters.push({ key: filter, val: q });
+        } else {
+          method = 'POST';
+          parameters.push({ key: 'similar_image', val: 1 });
+        }
+
+        console.log('pic = ' + pic);
+
+        fetchStockAPIJSON({ method, columns, parameters, pic })
           .then(json => {
             if (json.nb_results >= this.totalReturned) {
               this.totalReturned = json.nb_results;
@@ -141,7 +150,7 @@
       this.limit = parseInt(this.limit, 10) || 60;
       this.images = [];
       this.totalReturned = 0;
-      this.fetchResults(this.q, this.limit, this.filter, this.offset);
+      this.fetchResults(this.q, this.limit, this.filter, this.offset, this.pic);
     }
   };
 </script>

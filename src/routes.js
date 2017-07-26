@@ -9,7 +9,7 @@ export default [
     component: Search
   },
   {
-    path: '/results/:filter/:limit/:q/:referrer',
+    path: '/results/:filter/:limit/:q/:pic/:referrer',
     component: Results
   },
   {
