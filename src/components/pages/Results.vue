@@ -57,15 +57,22 @@
 
         fetchStockAPIJSON({ columns, parameters })
           .then(json => {
+            // remove preloader if no results returned
+            //  either from the end of the pagination or no results
             if (json.nb_results === 0) {
               this.$$('.initial-preloader').remove();
               this.$$('.infinite-scroll-preloader').remove();
             }
 
+            // set initial totalReturned
+            //  only if nb_results is > existing totalReturned
+            //  this is because sometimes nb_results is 0
             if (json.nb_results >= this.totalReturned) {
               this.totalReturned = json.nb_results;
             }
 
+            // set results bool to true if we have results
+            //  and false if we do not
             this.results = !!this.totalReturned;
 
             // merge the two arrays adding in the new results
@@ -77,6 +84,7 @@
               c[b.id] = b;
               return c;
             }, {});
+
             // ...then merge with existing imagesById
             this.imagesById = Object.assign({}, this.imagesById, imagesById);
 
@@ -91,12 +99,17 @@
             // set the new offset
             this.offset = offset + limit; // not working currently...see: issue #4
 
-            // remove the spinning preloader if we have all the results
+            // remove the preloader if we have all the results
             if (json.files.length === 0 || this.totalReturned <= limit) {
               this.$$('.infinite-scroll-preloader').remove();
             }
           }).catch(ex => {
             console.log('fetching failed', ex);
+            this.$f7.addNotification({
+              title: 'Error',
+              message: 'Failed to fetch from Adobe Stock',
+              hold: 3000
+            });
             this.$$('.infinite-scroll-preloader').remove();
           });
       },
