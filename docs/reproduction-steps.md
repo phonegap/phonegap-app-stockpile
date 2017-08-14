@@ -87,7 +87,7 @@
       router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/search`);
     }
     ```
-	  - _((explain this function))_
+    - _((explain this function))_
 
 7. Add a little hack to ensure search is always at the top of the history (explain?)
     ```javascript
@@ -156,7 +156,7 @@
       }
     }
     ```
-	  - _((explain this function))_
+    - _((explain this function))_
   - add a `methods` property to the default export with a stub for `fetchResults ()`:
     ```javascript
     methods: {
@@ -198,12 +198,12 @@
     </style>
     ```
 
-	- _((explain this CSS))_
+    - _((explain this CSS))_
 
 10. `fetchResults () {}`
   - first add the `fetch` polyfill: `npm install whatwg-fetch --save` (for Android 4.x and iOS < 10)
   - then add an import for it at the top of _**main.js**_: `import 'whatwg-fetch';`
-  - in `index.html`, replace the CSP with: `<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">	`
+  - in `index.html`, replace the CSP with: `<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">`
   - back in _**Results.vue**_, add an exception to the eslint comment for `fetch`: `/* global store fetch */`
   - add the real `fetchResults ()` method:
     ```javascript
@@ -223,9 +223,23 @@
 
       fetchStockAPIJSON({ columns, parameters })
         .then(json => {
+          // remove preloader if no results returned
+          //  either from the end of the pagination or no results
+          if (json.nb_results === 0) {
+            this.$$('.initial-preloader').remove();
+            this.$$('.infinite-scroll-preloader').remove();
+          }
+
+          // set initial totalReturned
+          //  only if nb_results is > existing totalReturned
+          //  this is because sometimes nb_results is 0
           if (json.nb_results >= this.totalReturned) {
             this.totalReturned = json.nb_results;
           }
+
+          // set results bool to true if we have results
+          //  and false if we do not
+          this.results = !!this.totalReturned;
 
           // merge the two arrays adding in the new results
           this.images = this.images.concat(json.files);
@@ -236,6 +250,7 @@
             c[b.id] = b;
             return c;
           }, {});
+
           // ...then merge with existing imagesById
           this.imagesById = Object.assign({}, this.imagesById, imagesById);
 
@@ -250,12 +265,17 @@
           // set the new offset
           this.offset = offset + limit; // not working currently...see: issue #4
 
-          // remove the spinning preloader if we have all the results
-          if (json.files.length === 0) {
+          // remove the preloader if we have all the results
+          if (json.files.length === 0 || this.totalReturned <= limit) {
             this.$$('.infinite-scroll-preloader').remove();
           }
         }).catch(ex => {
           console.log('fetching failed', ex);
+          this.$f7.addNotification({
+            title: 'Error',
+            message: 'Failed to fetch from Adobe Stock',
+            hold: 3000
+          });
           this.$$('.infinite-scroll-preloader').remove();
         });
     }
@@ -277,7 +297,7 @@
       this.fetchResults(this.q, this.limit, this.filter, this.offset);
     }
     ```
-		_((explain this function and lifecycle hooks))_
+    _((explain this function and lifecycle hooks))_
 
 12. _**Another.vue**_ -> _**Details.vue**_
   - rename `Another.vue` to `Details.vue`
