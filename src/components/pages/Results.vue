@@ -16,8 +16,11 @@
         </div>
       </div>
     </f7-block>
+    <div class="initial-preloader">
+      <f7-preloader :style="images.length ? 'display: none; animation: none' : ''" />
+    </div>
     <div class="infinite-scroll-preloader">
-      <f7-preloader :style="images.length ? '' : 'animation: none'" />
+      <f7-preloader :style="images.length ? '' : 'display: none; animation: none'" />
     </div>
   </f7-page>
 </template>
@@ -180,5 +183,8 @@
     .cell {
       width: calc(20% - 8px);
     }
+  }
+  .initial-preloader {
+    text-align: center;
   }
 </style>
