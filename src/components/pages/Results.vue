@@ -1,6 +1,7 @@
 <template>
   <f7-page name="results" @page:reinit="onPageReinit"
    infinite-scroll @infinite="onInfiniteScroll"
+   :infinite-scroll-preloader="false"
   >
     <f7-navbar sliding :back-link="backLink" title="Results"></f7-navbar>
     <!-- Scrollable page content-->
@@ -15,6 +16,9 @@
         </div>
       </div>
     </f7-block>
+    <div class="infinite-scroll-preloader">
+      <f7-preloader :style="images.length ? '' : 'animation: none'" />
+    </div>
   </f7-page>
 </template>
 
