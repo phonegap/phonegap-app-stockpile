@@ -16,6 +16,10 @@
         </div>
       </div>
     </f7-block>
+    <f7-block v-if="!results">
+      <p class="center">No results found.</p>
+      <p class="center">Go back and try a different search?</p>
+    </f7-block>
     <div class="initial-preloader">
       <f7-preloader :style="images.length ? 'display: none; animation: none' : ''" />
     </div>
@@ -32,7 +36,8 @@
     name: 'Results',
     data () {
       return {
-        images: []
+        images: [],
+        results: true
       };
     },
     methods: {
@@ -52,9 +57,16 @@
 
         fetchStockAPIJSON({ columns, parameters })
           .then(json => {
+            if (json.nb_results === 0) {
+              this.$$('.initial-preloader').remove();
+              this.$$('.infinite-scroll-preloader').remove();
+            }
+
             if (json.nb_results >= this.totalReturned) {
               this.totalReturned = json.nb_results;
             }
+
+            this.results = !!this.totalReturned;
 
             // merge the two arrays adding in the new results
             this.images = this.images.concat(json.files);
@@ -80,7 +92,7 @@
             this.offset = offset + limit; // not working currently...see: issue #4
 
             // remove the spinning preloader if we have all the results
-            if (json.files.length === 0) {
+            if (json.files.length === 0 || this.totalReturned <= limit) {
               this.$$('.infinite-scroll-preloader').remove();
             }
           }).catch(ex => {
@@ -185,6 +197,9 @@
     }
   }
   .initial-preloader {
+    text-align: center;
+  }
+  .center {
     text-align: center;
   }
 </style>
