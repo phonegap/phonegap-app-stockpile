@@ -18,7 +18,7 @@
   - `name: 'Home',` to `name: 'Search',`
   - update `routes.js` to use "Search" instead of "Home" (three instances)
   - replace `<f7-block-title />` and `<f7-block-inner />`  with:
-    ```javascript
+    ```html
     <form form method="GET" id="search-form" @submit.prevent="onSubmit">
       <f7-list>
       </f7-list>
@@ -42,7 +42,7 @@
 
 5. Start adding search form
   - add the search input:
-    ```javascript
+    ```html
     <f7-list-item>
       <f7-label floating v-if="isMaterial">Image search</f7-label>
       <f7-input type="search" name="q"
@@ -51,7 +51,7 @@
     </f7-list-item>
     ```
   - a hidden field to set the required limit and add the button to submit the search:
-    ```javascript
+    ```html
     <f7-block>
       <input type="hidden" name="limit" value="60" />
       <input type="submit" name="submit" class="hidden" value="Search" />
@@ -163,6 +163,58 @@
       fetchResults () {}
     }
     ```
+
+10. The images grid, reinitialization, and infinite scroll
+  - replace the `<f7-page ...` opening tag with:
+    ```html
+    <f7-page name="results" @page:reinit="onPageReinit"
+      infinite-scroll @infinite="onInfiniteScroll"
+      :infinite-scroll-preloader="false"
+    >
+    ```
+  - add stubs for the two event handlers above to the methods property
+    ```javascript
+    onInfiniteScroll () {},
+    onPageReinit () {}
+    ```
+  - add a `results` boolean to the `data()` return: `results: true`
+  - just before the closing `</f7-page>` tag, add a block to handle when there are no results returned:
+    ```html
+    <f7-block v-if="!results">
+      <p class="center">No results found.</p>
+      <p class="center">Go back and try a different search?</p>
+    </f7-block>
+    ```
+  - immediately after, add the two preloaders. one is for the initial loading before there are any results, the second is to show that more images are loading in the infinite scroll
+    ```html
+    <div class="initial-preloader">
+      <f7-preloader :style="images.length ? 'display: none; animation: none' : ''" />
+    </div>
+    <div class="infinite-scroll-preloader">
+      <f7-preloader :style="images.length ? '' : 'display: none; animation: none'" />
+    </div>
+    ```
+  - just below the `<f7-block-title ...` add the actual images grid block:
+    ```html
+    <f7-block>
+      <div class="grid">
+        <div class="cell" v-for="image in images">
+          <img
+            @click="() => onImageClick(image.id)"
+            :src="image.thumbnail_url"
+         />
+        </div>
+      </div>
+    </f7-block>
+    ```
+  - add the `onImageClick` method to route from an image to the Details page:
+    ```javascript
+    onImageClick (id) {
+      // route to the details page
+      const { mainView: { router } } = this.$f7;
+      router.loadPage(`/results/details/${id}`);
+    }
+    ```
   - after the `<script>` tag, add the CSS for the images grid
     ```css
     <style scoped>
@@ -197,13 +249,37 @@
       }
     </style>
     ```
-
     - _((explain this CSS))_
+  - `onPageReinit()` will handle when we come back from deep navigation and want to display the correct results. it basically refreshes the store with the data from this view. replace the stub with:
+    ```javascript
+    onPageReinit () {
+      // load the data for this page back into the store
+      Object.assign(window.store, {
+        images: this.images,
+        imagesById: this.imagesById,
+        totalReturned: this.totalReturned
+      });
+    }
+    ```
+  - `onInfiniteScroll()` loads the next set of images based on the limit/offset. replace the stub with:
+    ```javascript
+    onInfiniteScroll () {
+      const limit = parseInt(this.limit, 10); // better safe
+      const offset = parseInt(this.offset, 10); // ...than sorry
+      if (this.totalReturned === this.images.length) {
+        return;
+      }
+      this.fetchResults(this.q, limit, this.filter, offset);
+    }
+    ```
 
-10. `fetchResults () {}`
+11. `fetchResults () {}`
   - first add the `fetch` polyfill: `npm install whatwg-fetch --save` (for Android 4.x and iOS < 10)
   - then add an import for it at the top of _**main.js**_: `import 'whatwg-fetch';`
-  - in `index.html`, replace the CSP with: `<meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">`
+  - in `index.html`, replace the CSP with:
+    ```html
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">
+    ```
   - back in _**Results.vue**_, add an exception to the eslint comment for `fetch`: `/* global store fetch */`
   - add the real `fetchResults ()` method:
     ```javascript
@@ -283,7 +359,7 @@
     - _((explain this function - will need to be broken down a bit))_
     - _((might even need a refactor))_
 
-11. Fire `fetchResults ()` in a lifecycle hook
+12. Fire `fetchResults ()` in a lifecycle hook
   - add a `mounted ()` lifecycle hook to the default export:
     ```javascript
     mounted () {
@@ -299,7 +375,7 @@
     ```
     _((explain this function and lifecycle hooks))_
 
-12. _**Another.vue**_ -> _**Details.vue**_
+13. _**Another.vue**_ -> _**Details.vue**_
   - rename `Another.vue` to `Details.vue`
   - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Details';`
   - edit `routes.js` and replace the route for `/about/another/` with:
@@ -317,7 +393,7 @@
       }
       ```
   - replace entire `<f7-navbar ...` block with:
-    ```javascript
+    ```html
     <f7-navbar :back-link="backLink" sliding>
       <f7-nav-center>
         Details
@@ -360,4 +436,4 @@
 
 
 
-13. _**Services.vue**_ -> _**Favorites.vue**_
+14. _**Services.vue**_ -> _**Favorites.vue**_

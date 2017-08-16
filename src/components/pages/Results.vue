@@ -114,8 +114,8 @@
           });
       },
       onInfiniteScroll () {
-        const limit = parseInt(this.limit, 10);
-        const offset = parseInt(this.offset, 10);
+        const limit = parseInt(this.limit, 10); // better safe
+        const offset = parseInt(this.offset, 10); // ...than sorry
         if (this.totalReturned === this.images.length) {
           return;
         }
@@ -168,12 +168,13 @@
       }
     },
     mounted () {
+      const { params } = this.$route;
       // set some initial defaults
-      Object.assign(this, this.$route.params);
-      this.offset = parseInt(this.offset, 10) || 0;
-      this.limit = parseInt(this.limit, 10) || 60;
-      this.images = [];
-      this.totalReturned = 0;
+      params.offset = parseInt(params.offset, 10) || 0;
+      params.limit = parseInt(params.limit, 10) || 60;
+      params.images = [];
+      params.totalReturned = 0;
+      Object.assign(this, params);
       this.fetchResults(this.q, this.limit, this.filter, this.offset);
     }
   };
