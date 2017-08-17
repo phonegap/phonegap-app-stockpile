@@ -431,9 +431,131 @@
       toggleFavorite () {}
     }
     ```
-  - ...
-
-
+  - add some computed properties for various links:
+    ```javascript
+    findMoreLink () {
+      return `/results/similar/60/${this.item.id}/details`;
+    },
+    categoryLink () {
+      return `/results/category/60/${this.item.category.id}/details`;
+    },
+    creatorLink () {
+      return `/results/creator_id/60/${this.item.creator_id}/details`;
+    }
+    ```
+  - replace the `<f7-block ...` with a card:
+    ```html
+    <f7-card>
+    </f7-card>
+    ```
+  - inside the card, add the header:
+    ```html
+    <f7-card-header>
+      <div class="img-container" :style="imgBackground()"
+        @click="loadInPhotoBrowser"
+      >
+        <div class="img-container-inner" :style="imgBackground(500)"></div>
+        <div class="caption">{{item.title}}</div>
+      </div>
+    </f7-card-header>
+    ```
+  - add a computed property for `id`:
+    ```javascript
+    id () {
+      const { id } = this.$route.params;
+      return id;
+    }
+    ```
+  - add a computed property for the `item`:
+    ```javascript
+    item () {
+      // Fallback default for when images* and favorites* are reset in
+      //  the store
+      if (this.displayingFavorite) {
+        if (this.favoritesById && this.favoritesById[this.id]) {
+          this.stockItem = Object.assign(
+            {},
+            this.stockItem,
+            this.favoritesById[this.id]);
+        }
+        return this.stockItem;
+      }
+      if (this.imagesById && this.imagesById[this.id]) {
+        this.stockItem = Object.assign(
+          {},
+          this.stockItem,
+          this.imagesById[this.id]);
+      }
+      return this.stockItem;
+    }
+    ```
+    - _((explain this function))_
+  - add the `imgBackground()` method:
+    ```javascript
+    imgBackground (size = 0) {
+      const url = size > 0 ? `thumbnail_${size}_url` : 'thumbnail_url';
+      if (this.item[url]) this[url] = this.item[url];
+      return `background-image: url(${this[url]})`;
+    }
+    ```
+  - after the `<f7-card>`, add in the PhotoBrowser component to handle displaying the image
+    ```html
+    <f7-photo-browser
+      ref="pb"
+      type="page"
+      :photos="photos"
+      :lazyLoading="true"
+      backLinkText="Details"
+      :toolbar="false"
+    ></f7-photo-browser>
+    ```
+  - add a computed property to return an array of ohotos for the Photo Browser with just our one image in it:
+    ```javascript
+    photos () {
+      return [
+        {
+          url: this.item.thumbnail_1000_url,
+          caption: this.item.title || ''
+        }
+      ];
+    }
+    ```
+  - then add the `loadInPhotoBrowser()` method that will be called when the card header is clicked:
+    ```javascript
+    loadInPhotoBrowser () {
+      this.$refs.pb.open();
+    }
+    ```
+  - after the `<f7-card-header>` add in the `<f7-card-content>`:
+    ```html
+    <f7-card-content>
+      <f7-list>
+        <f7-list-item title="Category" :after="item.category.name"
+          :link="categoryLink"
+        ></f7-list-item>
+        <f7-list-item
+          title="Created by" :after="item.creator_name" :link="creatorLink"
+        ></f7-list-item>
+        <f7-list-item
+          title="Creation date" :after="creationDate"></f7-list-item>
+      </f7-list>
+    </f7-card-content>
+    ```
+  - at the start of the `<script>` tag, add an import for moment.js: `import moment from 'moment';`
+  - add in computed properties for `creationDate` using moment.js:
+    ```javascript
+    creationDate () {
+      const created = moment(this.item.creation_date);
+      return created.format('MMMM Do YYYY');
+    }
+    ```
+  - lastly, add in the `<f7-card-footer>` after the `<f7-card-content>`:
+    ```html
+    <f7-card-footer>
+      <f7-link :href="item.comp_url" external>Download Comp</f7-link>
+      <f7-link :href="findMoreLink">Find Similar</f7-link>
+    </f7-card-footer>
+    ```
 
 
 14. _**Services.vue**_ -> _**Favorites.vue**_
