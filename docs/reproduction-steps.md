@@ -556,6 +556,106 @@
       <f7-link :href="findMoreLink">Find Similar</f7-link>
     </f7-card-footer>
     ```
+  - after the `<script>` tag, add a `<style>` tag like this:
+    ```css
+    <style scoped>
+      .swiper {
+        height: 300px;
+      }
+      .img-container {
+        position: relative;
+        width: 100%;
+        height: 240px;
+        max-height: 240px;
+        overflow: hidden;
+        margin: 0;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+      }
+      .img-container-inner {
+        position:absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        -webkit-transform: translateY(-50%);
+        width: 100%;
+        height: 100%;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: center center;
+        z-index: 2;
+      }
+      .caption {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: rgba(0,0,0,0.3);
+        color: white;
+        padding: 8px 16px;
+        z-index: 3;
+      }
+    </style>
+    ```
+    - _((explain this css))_
+
+14. `toggleFavorites()`
+  - create a new file in `utils` called `favorites.js` and add a `toggleFavorite()` method:
+    ```javascript
+    export function toggleFavorite (favorite) {
+      const alreadyAFavorite = store.favorites.filter(fave => fave.id === favorite.id);
+      if (alreadyAFavorite.length > 0) {
+        removeFavorite(favorite.id);
+      } else {
+        addFavorite(favorite);
+      }
+      saveFavoritesToLocalStorage();
+    }
+    ```
+    - _((explain this function))_
+  - add the `updateFavoritesById()` function to take the array of faves and store tham as an object keyed by their id:
+    ```javascript
+    function updateFavoritesById () {
+      store.favoritesById = store.favorites.reduce((a, b) => {
+        const c = a;
+        c[b.id] = b;
+        return c;
+      }, {});
+    }
+    ```
+  - add the `addFavorite()`, `removeFavorite()`, and `saveFavoritesToLocalStorage()` functions:
+    ```javascript
+    function addFavorite (favorite) {
+      store.favorites.push(favorite);
+      updateFavoritesById();
+    }
+
+    function removeFavorite (id) {
+      store.favorites = store.favorites.filter(favorite => favorite.id !== id);
+      updateFavoritesById();
+    }
+
+    function saveFavoritesToLocalStorage () {
+      localStorage.setItem('favorites', JSON.stringify(store.favorites));
+    }
+    ```
+    - _((explain these functions))_
+  - back in **Details.vue**, add an import for the `favorites.js` file just under the import for moment.js: `import { toggleFavorite } from '../../utils/favorites';`
+  - replace the `toggleFavorites()` stub with the following:
+    ```javascript
+    toggleFavorite () {
+      const { mainView: { router } } = this.$f7;
+      if (this.displayingFavorite) {
+        // let the animation happen before removing the fave
+        setTimeout(() => {
+          toggleFavorite(this.item);
+        }, 410);
+        router.back();
+      } else {
+        toggleFavorite(this.item);
+      }
+    }
+    ```
 
 
-14. _**Services.vue**_ -> _**Favorites.vue**_
+15. _**Services.vue**_ -> _**Favorites.vue**_
