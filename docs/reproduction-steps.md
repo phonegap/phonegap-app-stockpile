@@ -280,8 +280,58 @@
     ```html
     <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">
     ```
-  - back in _**Results.vue**_, add an exception to the eslint comment for `fetch`: `/* global store fetch */`
-  - add the real `fetchResults ()` method:
+  - create a folder in `src` called `utils` and in that folder create a file called `config.js` with the following:
+    ```javascript
+    export const apiHeaders = {
+      'x-api-key': '***************************', // replace with your api-key
+      'X-Product': 'Stockpile/1.0.0'
+    };
+    ```
+  - replace the `***************************` with your Adobe Stock API key
+  - also in the `utils` folder, create a file called `stockAPI.js` with the following:
+    ```javascript
+    /* global fetch */
+
+    import { apiHeaders } from './config';
+
+    const apiBase = 'https://stock.adobe.io/Rest/Media/1/Search/Files';
+
+    // function to format an array of columns into the query string needed
+    export function formatResultColumns (columns) {
+      if (columns.length < 1) return '';
+      return `result_columns[]=${columns.join('&result_columns[]=')}`;
+    }
+
+    // function to format an object containing parameters into the query string needed
+    export function formatSearchParameters (parameters) {
+      return parameters
+        .map(param => `search_parameters[${param.key}]=${param.val}`)
+        .join('&');
+    }
+
+    // function to call the Adobe Stock API and return the results
+    export default function fetchStockAPIJSON (options) {
+      const { columns, parameters } = options;
+      const resultColumns = formatResultColumns(columns);
+      const searchParameters = formatSearchParameters(parameters);
+      const apiURL = `${apiBase}?${resultColumns}&${searchParameters}`;
+      const myInit = {
+        method: 'GET',
+        headers: new Headers(apiHeaders)
+      };
+      return new Promise((resolve, reject) => {
+        fetch(apiURL, myInit)
+          .then(response => response.json())
+          .then((json) => {
+            resolve(json);
+          }).catch((ex) => {
+            reject(ex);
+          });
+      });
+    }
+    ```
+    - _((explain these functions))_
+  - back in _**Results.vue**_, add the real `fetchResults ()` method:
     ```javascript
     fetchResults (q, limit, filter, offset = 0) {
       const columns = [
@@ -423,6 +473,14 @@
     displayingFavorite () {
       const { displayingFavorite = false } = this.$route.query;
       return !!displayingFavorite;
+    }
+    ```
+  - add one more computed property for `isFavorite`:
+    ```javascript
+    isFavorite () {
+      const filteredFavorites =
+        this.favorites.filter(favorite => favorite.id.toString() === this.id);
+      return !!filteredFavorites.length;
     }
     ```
   - in the default export after the `computed` property, add a `methods` property with a method for the `toggleFavorite` click handler (for now, just a stub, we'll come back to it):
@@ -656,6 +714,5 @@
       }
     }
     ```
-
 
 15. _**Services.vue**_ -> _**Favorites.vue**_
