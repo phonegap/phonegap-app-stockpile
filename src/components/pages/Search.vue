@@ -7,6 +7,7 @@
       <f7-nav-center sliding>{{ title }}</f7-nav-center>
     </f7-navbar>
     <!-- Scrollable page content-->
+    <f7-block-title>Search for Stock images by keyword</f7-block-title>
     <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
       <f7-list>
         <f7-list-item>
