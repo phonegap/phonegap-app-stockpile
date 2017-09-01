@@ -1,5 +1,5 @@
 <template>
-  <f7-page name="details">
+  <f7-page name="details" @page:beforeanimation="onPageBeforeAnimation">
     <f7-navbar :back-link="backLink" sliding>
       <f7-nav-center>
         Details
@@ -79,6 +79,14 @@
       },
       loadInPhotoBrowser () {
         this.$refs.pb.open();
+      },
+      onPageBeforeAnimation () {
+        // When going 'back' from the photo browser, make sure we disable
+        //  exposition (hidden navbar, etc) if it was enabled
+        const { pb: photoBrowser } = this.$refs;
+        if (photoBrowser.f7PhotoBrowser.exposed) {
+          photoBrowser.disableExposition();
+        }
       }
     },
     computed: {
