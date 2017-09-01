@@ -10,7 +10,7 @@
 3. Tweaks to _**index.html**_
   - change `<title />` to "Stockpile"
 
-4. Home.vue -> Search.vue
+4. _**Home.vue**_ -> _**Search.vue**_
   - rename `Home.vue` to `Search.vue`
   - `<f7-page name="home">` to `<f7-page name="search">`
   - change the `<f7-nav-center />` to `{{ title }}`
@@ -115,7 +115,7 @@
       component: Results
     },
     ```
-  - remove the "About" link from `LeftPanel.vue`
+  - remove the "About" link from _**LeftPanel.vue**_
   - rename `About.vue` to `Results.vue`
   - change `name` property to "Results"
   - `title` data object returns "Results"
@@ -438,10 +438,10 @@
   - change `name` property to "Details"
   - replace the `data()` method with one returning the store:
     ```javascript
-      data () {
-        return store;
-      }
-      ```
+    data () {
+      return store;
+    }
+    ```
   - replace entire `<f7-navbar ...` block with:
     ```html
     <f7-navbar :back-link="backLink" sliding>
@@ -716,3 +716,48 @@
     ```
 
 15. _**Services.vue**_ -> _**Favorites.vue**_
+  - rename `Services.vue` to `Favorites.vue`
+  - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Favorites';`
+  - edit `routes.js` and replace the route for `/about/another/` with:
+    ```javascript
+    {
+      path: '/favorites/',
+      component: Favorites
+    }
+    ```
+  - change `name` property to "Favorites"
+  - replace the `data()` method with one returning the store:
+    ```javascript
+    data () {
+      return store;
+    }
+    ```
+  - replace entire `<f7-navbar ...` block with:
+    ```html
+    <f7-navbar sliding>
+      <f7-nav-left>
+        <f7-link icon-f7="bars" open-panel="left"></f7-link>
+      </f7-nav-left>
+      <f7-nav-center>
+        Favorites
+      </f7-nav-center>
+    </f7-navbar>
+    ```
+  - replace `<f7-block-title />` and `<f7-block-inner />`  with:
+    ```html
+    <f7-list media-list v-if="hasFavorites"></f7-list>
+    <f7-content-block v-else>
+      <p>
+        You have no favorites saved. Search for something then use the
+        star icon to save a favorite
+      </p>
+    </f7-content-block>
+    ```
+  - in the default export, add a `computed` object with a property for `hasFavorites`:
+    ```javascript
+    computed: {
+      hasFavorites () {
+        return !!this.favorites.length;
+      }
+    }
+    ```
