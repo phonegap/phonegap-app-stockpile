@@ -5,12 +5,22 @@
   >
     <f7-navbar sliding :back-link="backLink" title="Results"></f7-navbar>
     <!-- Scrollable page content-->
-    <f7-block-title>{{ imagesReturned }}</f7-block-title>
-    <f7-block>
+    <f7-block-title v-if="results">{{ imagesReturned }}</f7-block-title>
+    <f7-block v-if="results">
       <div class="grid">
-        <div class="cell" v-for="image in images">
+        <div class="cell"
+          v-if="!images.length"
+          v-for="n in 60"
+          :key="n"
+        >
+          <div class="placeholder" />
+        </div>
+        <div class="cell"
+          v-for="image in images"
+          @click="() => onImageClick(image.id)"
+          :key="image.id"
+        >
           <img
-            @click="() => onImageClick(image.id)"
             :src="image.thumbnail_url"
          />
         </div>
@@ -20,9 +30,6 @@
       <p class="center">No results found.</p>
       <p class="center">Go back and try a different search?</p>
     </f7-block>
-    <div class="initial-preloader">
-      <f7-preloader :style="images.length ? 'display: none; animation: none' : ''" />
-    </div>
     <div class="infinite-scroll-preloader">
       <f7-preloader :style="images.length ? '' : 'display: none; animation: none'" />
     </div>
@@ -145,24 +152,19 @@
         // build the string to display for the number of results
         const { q } = this;
         const { filter } = this.$route.params;
-        let message = '';
+        let message = 'Loading results...';
+        if (!this.images.length) return message;
         // wait for something to be returned
         switch (filter) {
           case 'similar':
-            message = this.images.length
-              ? `${this.totalReturned} similar results to ${q}`
-              : '';
+            message = `${this.totalReturned} similar results to ${q}`;
             break;
           case 'creator_id':
             const [ img ] = this.images;
-            message = this.images.length
-              ? `${this.totalReturned} results for ${img.creator_name}`
-              : '';
+            message = `${this.totalReturned} results for ${img.creator_name}`;
             break;
           default:
-            message = this.images.length
-              ? `${this.totalReturned} results for "${q}"`
-              : '';
+            message = `${this.totalReturned} results for "${q}"`;
         }
         return message;
       }
@@ -182,6 +184,11 @@
 
 <style scoped>
   /* default for phones / portrait */
+  .cell .placeholder {
+    width: 100%;
+    padding-top: 100%;
+    background: #fcfcfc;
+  }
   .cell img {
     display: block;
     width: 100%;
