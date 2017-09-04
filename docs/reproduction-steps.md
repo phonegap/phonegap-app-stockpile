@@ -11,12 +11,12 @@
   - change `<title />` to "Stockpile"
 
 4. _**Home.vue**_ -> _**Search.vue**_
-  - rename `Home.vue` to `Search.vue`
+  - update `routes.js` to use "Search" instead of "Home" (three instances)
+  - in `src/components/pages/` rename `Home.vue` to `Search.vue`
   - `<f7-page name="home">` to `<f7-page name="search">`
   - change the `<f7-nav-center />` to `{{ title }}`
   - change the `title` data property to "Search"
   - `name: 'Home',` to `name: 'Search',`
-  - update `routes.js` to use "Search" instead of "Home" (three instances)
   - replace `<f7-block-title />` and `<f7-block-inner />`  with:
     ```html
     <form form method="GET" id="search-form" @submit.prevent="onSubmit">
@@ -38,9 +38,9 @@
       }
     };
     ```
-  - in _**LeftPanel.vue**_, change the title of the first link from "Home" to "Search"
+  - in _**LeftPanel.vue**_, change the title of the first link from "Home" to "Search". The `link` should be `"/"`
 
-5. Start adding search form
+5. Still in _**Search.vue**_, start adding the search form
   - add the search input:
     ```html
     <f7-list-item>
@@ -60,7 +60,7 @@
       </f7-button>
     </f7-block>
     ```
-  - add a computed property for `isMaterial`:
+  - in the default export, add a computed property for `isMaterial`:
     ```javascript
     computed: {
       isMaterial () {
@@ -89,7 +89,7 @@
     ```
     - _((explain this function))_
 
-7. Add a little hack to ensure search is always at the top of the history (explain?)
+7. Add a little hack to ensure search is always at the top of the history (explain?). This should be added _after_ the `methods` object in the default export:
     ```javascript
     created () {
       this.$f7.mainView.history = ['/'];
@@ -207,7 +207,7 @@
       </div>
     </f7-block>
     ```
-  - add the `onImageClick` method to route from an image to the Details page:
+  - add the `onImageClick` method to the `methods` object to route from an image to the Details page:
     ```javascript
     onImageClick (id) {
       // route to the details page
@@ -278,7 +278,7 @@
   - then add an import for it at the top of _**main.js**_: `import 'whatwg-fetch';`
   - in `index.html`, replace the CSP with:
     ```html
-    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://api.spotify.com 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self' data: gap: https://ssl.gstatic.com https://stock.adobe.io 'unsafe-eval' 'unsafe-inline' ws://*; style-src 'self' 'unsafe-inline'; media-src *; img-src * data:">
     ```
   - create a folder in `src` called `utils` and in that folder create a file called `config.js` with the following:
     ```javascript
@@ -410,7 +410,7 @@
     - _((might even need a refactor))_
 
 12. Fire `fetchResults ()` in a lifecycle hook
-  - add a `mounted ()` lifecycle hook to the default export:
+  - add a `mounted ()` lifecycle hook to the default export (link to Vue.js docs on lifecycle hooks):
     ```javascript
     mounted () {
       const { params } = this.$route;
@@ -426,15 +426,15 @@
     _((explain this function and lifecycle hooks))_
 
 13. _**Another.vue**_ -> _**Details.vue**_
-  - rename `Another.vue` to `Details.vue`
   - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Details';`
   - edit `routes.js` and replace the route for `/about/another/` with:
     ```javascript
     {
       path: '/results/details/:id',
-      component: Results
+      component: Details
     },
     ```
+  - in `src/components/pages/` rename `Another.vue` to `Details.vue`
   - change `name` property to "Details"
   - replace the `data()` method with one returning the store:
     ```javascript
@@ -548,7 +548,7 @@
     }
     ```
     - _((explain this function))_
-  - add the `imgBackground()` method:
+  - add the `imgBackground()` method to the `methods` object in the default export:
     ```javascript
     imgBackground (size = 0) {
       const url = size > 0 ? `thumbnail_${size}_url` : 'thumbnail_url';
