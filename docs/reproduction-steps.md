@@ -657,7 +657,7 @@
     ```
     - _((explain this css))_
 
-14. `toggleFavorites()`
+14. `toggleFavorite()`
   - create a new file in `utils` called `favorites.js` and add a `toggleFavorite()` method:
     ```javascript
     export function toggleFavorite (favorite) {
@@ -716,7 +716,6 @@
     ```
 
 15. _**Services.vue**_ -> _**Favorites.vue**_
-  - rename `Services.vue` to `Favorites.vue`
   - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Favorites';`
   - edit `routes.js` and replace the route for `/about/another/` with:
     ```javascript
@@ -725,6 +724,7 @@
       component: Favorites
     }
     ```
+  - rename `Services.vue` to `Favorites.vue`
   - change `name` property to "Favorites"
   - replace the `data()` method with one returning the store:
     ```javascript
@@ -759,5 +759,59 @@
       hasFavorites () {
         return !!this.favorites.length;
       }
+    }
+    ```
+  - inside the `<f7-list>`, add the following fully loaded list item:
+    ```html
+    <f7-list-item v-for="favorite in favorites"
+      :key="favorite.id"
+      @click="clickItem(favorite.id)"
+      @swipeout:deleted="onSwipeoutDeleted(favorite)"
+      :link="`/results/details/${favorite.id}`"
+      :media="mediaItemImage(favorite.thumbnail_url, favorite.title)"
+      :title="favorite.title"
+      :text="formatDate(favorite.creation_date)"
+      :subtitle="favorite.category.name"
+      swipeout
+    >
+      <f7-swipeout-actions>
+        <f7-swipeout-button delete>Delete</f7-swipeout-button>
+      </f7-swipeout-actions>
+    </f7-list-item>
+    ```
+    - _((perhaps break this up and add the swipeout after the rest?))_
+  - add a `methods` object to the default export and add a `clickItem()` method to load the details page when an item is clicked:
+    ```javascript
+    clickItem (id) {
+      this.$f7.mainView.router
+        .loadPage(`/results/details/${id}?displayingFavorite=true`);
+    }
+    ```
+  - add a `mediaItemImage()` method to return the URL of the image
+    ```javascript
+    mediaItemImage (url, title) {
+      return `<img alt="${title}" width="80" src="${url}" />`;
+    }
+    ```
+  - at the start of the `<script>` tag, add an import for moment.js: `import moment from 'moment';`
+  - add a `formatDate()` method to the methods object:
+    ```javascript
+    formatDate (date) {
+      const created = moment(date);
+      return `Created: ${created.format('MMMM Do YYYY')}`;
+    }
+    ```
+  - after the moment.js import, add an import for our favorites utils `toggleFavorite()` method: `import { toggleFavorite } from '../../utils/favorites';`
+  - add an `onSwipeoutDeleted()` method to the methods object to handle the swipeout delete event
+    ```javascript
+    onSwipeoutDeleted (favorite) {
+      toggleFavorite(favorite);
+    }
+    ```
+
+16. Add a little hack to ensure favorites are always at the top of the history (explain?). This should be added _after_ the `methods` object in the default export:
+    ```javascript
+    created () {
+      this.$f7.mainView.history = ['/'];
     }
     ```

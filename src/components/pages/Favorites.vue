@@ -14,7 +14,7 @@
         @click="clickItem(favorite.id)"
         @swipeout:deleted="onSwipeoutDeleted(favorite)"
         :link="`/results/details/${favorite.id}`"
-        :media="mediaItemImage(favorite.thumbnail_url)"
+        :media="mediaItemImage(favorite.thumbnail_url, favorite.title)"
         :title="favorite.title"
         :text="formatDate(favorite.creation_date)"
         :subtitle="favorite.category.name"
@@ -45,8 +45,8 @@
       return store;
     },
     methods: {
-      mediaItemImage (url) {
-        return `<img width="80" src="${url}" />`;
+      mediaItemImage (url, title) {
+        return `<img alt="${title}" width="80" src="${url}" />`;
       },
       clickItem (id) {
         this.$f7.mainView.router
