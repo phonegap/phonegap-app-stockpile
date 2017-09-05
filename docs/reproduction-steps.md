@@ -120,12 +120,16 @@
   - change `name` property to "Results"
   - `title` data object returns "Results"
   - replace entire `<f7-navbar ...` block with `<f7-navbar title="Results" back-link="Back" sliding></f7-navbar>`
-  - in the `<f7-block-title>`, replace `{{ title }}` with `{{ imagesReturned }}`
+  - replace the entire `<f7-block-title>` block with
+    ```html
+    <f7-block-title v-if="results">{{ imagesReturned }}</f7-block-title>
+    ```
   - modify the return expression for `data ()` in the default export to return the global store from above:
     ```javascript
     data () {
       return {
-        images: []
+        images: [],
+        results: true
       };
     }
     ```
@@ -185,22 +189,29 @@
       <p class="center">Go back and try a different search?</p>
     </f7-block>
     ```
-  - immediately after, add the two preloaders. one is for the initial loading before there are any results, the second is to show that more images are loading in the infinite scroll
+  - immediately after, add the preloader
     ```html
-    <div class="initial-preloader">
-      <f7-preloader :style="images.length ? 'display: none; animation: none' : ''" />
-    </div>
     <div class="infinite-scroll-preloader">
       <f7-preloader :style="images.length ? '' : 'display: none; animation: none'" />
     </div>
     ```
   - just below the `<f7-block-title ...` add the actual images grid block:
     ```html
-    <f7-block>
+    <f7-block v-if="results">
       <div class="grid">
-        <div class="cell" v-for="image in images">
+        <div class="cell"
+          v-if="!images.length"
+          v-for="n in 60"
+          :key="n"
+        >
+          <div class="placeholder" />
+        </div>
+        <div class="cell"
+          v-for="image in images"
+          @click="() => onImageClick(image.id)"
+          :key="image.id"
+        >
           <img
-            @click="() => onImageClick(image.id)"
             :src="image.thumbnail_url"
          />
         </div>
@@ -219,6 +230,11 @@
     ```css
     <style scoped>
       /* default for phones / portrait */
+      .cell .placeholder {
+        width: 100%;
+        padding-top: 100%;
+        background: #fcfcfc;
+      }
       .cell img {
         display: block;
         width: 100%;
@@ -246,6 +262,12 @@
         .cell {
           width: calc(20% - 8px);
         }
+      }
+      .initial-preloader {
+        text-align: center;
+      }
+      .center {
+        text-align: center;
       }
     </style>
     ```
