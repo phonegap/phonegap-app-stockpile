@@ -746,6 +746,28 @@
       component: Favorites
     }
     ```
+  - after the other imports, add an import for `fetchFavoritesFromLocalStorage` in our utils
+    ```javascript
+    import { fetchFavoritesFromLocalStorage } from './utils/favorites';
+    ```
+  - just before the global store, add a call to fetch the favorites from localstorage and a function to reduce them by id
+    ```javascript
+    const favorites = fetchFavoritesFromLocalStorage();
+    const favoritesById = favorites.reduce((a, b) => {
+      const c = a;
+      c[b.id] = b;
+      return c;
+    }, {});
+    ```
+  - in _**main.js**_, add the `favorites` and `favoritesById` to the global store
+    ```javascript
+    window.store = {
+      images: [],
+      imagesById: {},
+      favorites,
+      favoritesById
+    }
+    ```
   - rename `Services.vue` to `Favorites.vue`
   - change `name` property to "Favorites"
   - replace the `data()` method with one returning the store:
