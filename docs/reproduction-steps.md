@@ -14,12 +14,12 @@
   - update `routes.js` to use "Search" instead of "Home" (three instances)
   - in `src/components/pages/` rename `Home.vue` to `Search.vue`
   - `<f7-page name="home">` to `<f7-page name="search">`
-  - change the `<f7-nav-center />` to `{{ title }}`
+  - change the `<f7-nav-center />` to `<f7-nav-center>{{ title }}</f7-nav-center>`
   - change the `title` data property to "Search"
   - `name: 'Home',` to `name: 'Search',`
   - replace `<f7-block-title />` and `<f7-block-inner />`  with:
     ```html
-    <form form method="GET" id="search-form" @submit.prevent="onSubmit">
+    <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
       <f7-list>
       </f7-list>
     </form>
@@ -41,7 +41,7 @@
   - in _**LeftPanel.vue**_, change the title of the first link from "Home" to "Search". The `link` should be `"/"`
 
 5. Still in _**Search.vue**_, start adding the search form
-  - add the search input:
+  - add the search input inside the `<f7-list>`:
     ```html
     <f7-list-item>
       <f7-label floating v-if="isMaterial">Image search</f7-label>
@@ -50,7 +50,7 @@
         autocorrect="off" autocapitalize="off" />
     </f7-list-item>
     ```
-  - a hidden field to set the required limit and add the button to submit the search:
+  - after the `<f7-list>`, add a hidden field to set the required limit and add the button to submit the search:
     ```html
     <f7-block>
       <input type="hidden" name="limit" value="60" />
@@ -67,6 +67,14 @@
         return window.isMaterial;
       }
     },
+    ```
+  - after the `<script>` tag close, add a style tag with a class for hiding the submit input above
+    ```css
+    <style scoped>
+      .hidden {
+        display: none;
+      }
+    </style>
     ```
 
 6. `onSubmit()`
@@ -111,7 +119,7 @@
   - edit `routes.js` and replace the route for `/about/` with:
     ```javascript
     {
-      path: '/results/:filter/:limit/:q',
+      path: '/results/:filter/:limit/:q/:referrer',
       component: Results
     },
     ```
@@ -128,8 +136,7 @@
     ```javascript
     data () {
       return {
-        images: [],
-        results: true
+        images: []
       };
     }
     ```
@@ -353,7 +360,8 @@
     }
     ```
     - _((explain these functions))_
-  - back in _**Results.vue**_, add the real `fetchResults ()` method:
+  - back in _**Results.vue**_, at the top of the `<script>` tag, add an import for `fetchStockAPIJSON`: `import fetchStockAPIJSON from '../../utils/stockAPI';`
+  - add the real `fetchResults ()` method:
     ```javascript
     fetchResults (q, limit, filter, offset = 0) {
       const columns = [
