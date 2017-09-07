@@ -11,13 +11,21 @@
   - change `<title />` to "Stockpile"
 
 4. _**Home.vue**_ -> _**Search.vue**_
-  - update `routes.js` to use "Search" instead of "Home" (three instances)
+  - update _**routes.js**_ to use "Search" instead of "Home" (three instances)
+  - install the `framework7-icons` package from npm: `npm install framework7-icons --save`
+  - in _**main.js**_, just above the import for the `routes`, add an import for the icons above
+    ```javascript
+    // Import the Framework7 Icons
+    import Framework7Icons from 'framework7-icons/css/framework7-icons.css';
+    ```
   - in `src/components/pages/` rename `Home.vue` to `Search.vue`
   - `<f7-page name="home">` to `<f7-page name="search">`
+  - change the `icon="icon-bars"` in the `<f7-link>` to `icon-f7="bars"`
   - change the `<f7-nav-center />` to `<f7-nav-center>{{ title }}</f7-nav-center>`
   - change the `title` data property to "Search"
   - `name: 'Home',` to `name: 'Search',`
-  - replace `<f7-block-title />` and `<f7-block-inner />`  with:
+  - replace `<f7-block-title...` with `<f7-block-title>Search for Stock images by keyword</f7-block-title>`
+  - replace `<f7-block-inner />`  with:
     ```html
     <form ref="searchForm" form method="GET" @submit.prevent="onSubmit">
       <f7-list>
@@ -456,16 +464,20 @@
     _((explain this function and lifecycle hooks))_
 
 13. _**Another.vue**_ -> _**Details.vue**_
-  - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Details';`
+  - edit `routes.js` and replace the import for `Another` with `import Details from './components/pages/Details';`
   - edit `routes.js` and replace the route for `/about/another/` with:
     ```javascript
     {
       path: '/results/details/:id',
       component: Details
-    },
+    }
     ```
   - in `src/components/pages/` rename `Another.vue` to `Details.vue`
-  - change `name` property to "Details"
+  - replace the opening `<f7-page...` tag with `<f7-page name="details" @page:beforeanimation="onPageBeforeAnimation">`
+  - at the top of the `<script>` tag, add an eslint exception for the global store
+    ```javascript
+    /* global store */
+    ```
   - replace the `data()` method with one returning the store:
     ```javascript
     data () {
@@ -519,6 +531,17 @@
       toggleFavorite () {}
     }
     ```
+  - add a method for `onPageBeforeAnimation`
+    ```javascript
+    onPageBeforeAnimation () {
+      // When going 'back' from the photo browser, make sure we disable
+      //  exposition (hidden navbar, etc) if it was enabled
+      const { pb: photoBrowser } = this.$refs;
+      if (photoBrowser.f7PhotoBrowser.exposed) {
+        photoBrowser.disableExposition();
+      }
+    }
+    ```
   - add some computed properties for various links:
     ```javascript
     findMoreLink () {
@@ -531,7 +554,7 @@
       return `/results/creator_id/60/${this.item.creator_id}/details`;
     }
     ```
-  - replace the `<f7-block ...` with a card:
+  - replace the `<f7-block-title...` and `<f7-block ...` with a card:
     ```html
     <f7-card>
     </f7-card>
@@ -629,6 +652,7 @@
       </f7-list>
     </f7-card-content>
     ```
+  - install moment.js: `npm install moment --save`
   - at the start of the `<script>` tag, add an import for moment.js: `import moment from 'moment';`
   - add in computed properties for `creationDate` using moment.js:
     ```javascript
@@ -688,7 +712,11 @@
     - _((explain this css))_
 
 14. `toggleFavorite()`
-  - create a new file in `utils` called `favorites.js` and add a `toggleFavorite()` method:
+  - create a new file in `utils` called `favorites.js` and add an eslint exception for the global store
+    ```javascript
+    /* global store */
+    ```
+  - add a `toggleFavorite()` method:
     ```javascript
     export function toggleFavorite (favorite) {
       const alreadyAFavorite = store.favorites.filter(fave => fave.id === favorite.id);
@@ -701,7 +729,7 @@
     }
     ```
     - _((explain this function))_
-  - add the `updateFavoritesById()` function to take the array of faves and store tham as an object keyed by their id:
+  - above `toggleFavorite()`, add the `updateFavoritesById()` function to take the array of faves and store tham as an object keyed by their id:
     ```javascript
     function updateFavoritesById () {
       store.favoritesById = store.favorites.reduce((a, b) => {
@@ -711,7 +739,13 @@
       }, {});
     }
     ```
-  - add the `addFavorite()`, `removeFavorite()`, and `saveFavoritesToLocalStorage()` functions:
+  - add one last function to load the favorites from localstorage:
+    ```javascript
+    export function fetchFavoritesFromLocalStorage () {
+      return JSON.parse(localStorage.getItem('favorites')) || [];
+    }
+    ```
+  - above `updateFavoritesById()`, add the `addFavorite()`, `removeFavorite()`, and `saveFavoritesToLocalStorage()` functions:
     ```javascript
     function addFavorite (favorite) {
       store.favorites.push(favorite);
@@ -746,7 +780,7 @@
     ```
 
 15. _**Services.vue**_ -> _**Favorites.vue**_
-  - edit `routes.js` and replace the import for `Another` with `import Results from './components/pages/Favorites';`
+  - edit `routes.js` and replace the import for `Another` with `import Favorites from './components/pages/Favorites';`
   - edit `routes.js` and replace the route for `/about/another/` with:
     ```javascript
     {
@@ -754,7 +788,17 @@
       component: Favorites
     }
     ```
-  - after the other imports, add an import for `fetchFavoritesFromLocalStorage` in our utils
+  - in _**LeftPanel.vue**_, replace the link for the Services page with
+    ```html
+    <f7-list-item
+      link="/favorites/"
+      title="Favorites"
+      link-view="#main-view"
+      link-reload
+      link-close-panel
+    />
+    ```
+  - in _**main.js**_ after the other imports, add an import for `fetchFavoritesFromLocalStorage` in our utils
     ```javascript
     import { fetchFavoritesFromLocalStorage } from './utils/favorites';
     ```
@@ -767,7 +811,7 @@
       return c;
     }, {});
     ```
-  - in _**main.js**_, add the `favorites` and `favoritesById` to the global store
+  - add the `favorites` and `favoritesById` to the global store
     ```javascript
     window.store = {
       images: [],
@@ -778,6 +822,10 @@
     ```
   - rename `Services.vue` to `Favorites.vue`
   - change `name` property to "Favorites"
+  - at the top of the `<script>` tag, add an eslint exception for the global store
+    ```javascript
+    /* global store */
+    ```
   - replace the `data()` method with one returning the store:
     ```javascript
     data () {
