@@ -7,8 +7,12 @@
   - `npm run dev` (will open a browser to `http://localhost:8080`) – OR – `npm run build && phonegap serve` and open Chrome to `http://localhost:3000` (if viewed at `localhost` or `127.0.0.1`, this should actually install the service worker, etc and can be tested with Lighthouse).
   - `npm test` (run unit and end to end tests)
 
+---------
+
 3. Tweaks to _**index.html**_
-  - change `<title />` to "Stockpile"
+  - change `<title />` from "MyApp" to "Stockpile" in `src/index.html`
+
+---------
 
 4. _**Home.vue**_ -> _**Search.vue**_
   - update _**routes.js**_ to use "Search" instead of "Home" (three instances)
@@ -48,7 +52,9 @@
     ```
   - in _**LeftPanel.vue**_, change the title of the first link from "Home" to "Search". The `link` should be `"/"`
 
-5. Still in _**Search.vue**_, start adding the search form
+---------
+
+5. Back in _**Search.vue**_, start adding the search form
   - add the search input inside the `<f7-list>`:
     ```html
     <f7-list-item>
@@ -74,7 +80,7 @@
       isMaterial () {
         return window.isMaterial;
       }
-    },
+    }
     ```
   - after the `<script>` tag close, add a style tag with a class for hiding the submit input above
     ```css
@@ -84,6 +90,8 @@
       }
     </style>
     ```
+
+---------
 
 6. `onSubmit()`
   - replace the stub `onSubmit()` with this:
@@ -112,6 +120,8 @@
     }
     ```
 
+---------
+
 8. The global store
   - in _**main.js**_, add a global `store` object:
     ```javascript
@@ -122,6 +132,8 @@
     };
     ```
 
+---------
+
 9. _**About.vue**_ -> _**Results.vue**_
   - edit `routes.js` and replace the import for `About` with `import Results from './components/pages/Results';`
   - edit `routes.js` and replace the route for `/about/` with:
@@ -129,11 +141,11 @@
     {
       path: '/results/:filter/:limit/:q/:referrer',
       component: Results
-    },
+    }
     ```
   - remove the "About" link from _**LeftPanel.vue**_
   - rename `About.vue` to `Results.vue`
-  - change `name` property to "Results"
+  - change `name` property to "results"
   - `title` data object returns "Results"
   - replace entire `<f7-navbar ...` block with `<f7-navbar title="Results" back-link="Back" sliding></f7-navbar>`
   - replace the entire `<f7-block-title>` block with
@@ -154,25 +166,21 @@
       // build the string to display for the number of results
       const { q } = this;
       const { filter } = this.$route.params;
+      let message = 'Loading results...';
+      if (!this.images.length) return message;
       // wait for something to be returned
-      if (!this.images) {
-        return '';
-      }
       switch (filter) {
         case 'similar':
-          return this.images.length
-          ? `${this.totalReturned} similar results to ${q}`
-          : '';
+          message = `${this.totalReturned} similar results to ${q}`;
+          break;
         case 'creator_id':
           const [ img ] = this.images;
-          return this.images.length
-            ? `${this.totalReturned} results for ${img.creator_name}`
-            : '';
+          message = `${this.totalReturned} results for ${img.creator_name}`;
+          break;
         default:
-          return this.images.length
-            ? `${this.totalReturned} results for "${q}"`
-            : '';
+          message = `${this.totalReturned} results for "${q}"`;
       }
+      return message;
     }
     ```
     - _((explain this function))_
@@ -182,6 +190,8 @@
       fetchResults () {}
     }
     ```
+
+---------
 
 10. The images grid, reinitialization, and infinite scroll
   - replace the `<f7-page ...` opening tag with:
@@ -210,7 +220,7 @@
       <f7-preloader :style="images.length ? '' : 'display: none; animation: none'" />
     </div>
     ```
-  - just below the `<f7-block-title ...` add the actual images grid block:
+  - replace the `<f7-block inner...` with the actual images grid block:
     ```html
     <f7-block v-if="results">
       <div class="grid">
@@ -309,6 +319,8 @@
       this.fetchResults(this.q, limit, this.filter, offset);
     }
     ```
+
+---------
 
 11. `fetchResults () {}`
   - first add the `fetch` polyfill: `npm install whatwg-fetch --save` (for Android 4.x and iOS < 10)
@@ -462,6 +474,8 @@
     }
     ```
     _((explain this function and lifecycle hooks))_
+
+---------
 
 13. _**Another.vue**_ -> _**Details.vue**_
   - edit `routes.js` and replace the import for `Another` with `import Details from './components/pages/Details';`
@@ -739,7 +753,7 @@
       }, {});
     }
     ```
-  - add one last function to load the favorites from localstorage:
+  - add another function to load the favorites from localstorage:
     ```javascript
     export function fetchFavoritesFromLocalStorage () {
       return JSON.parse(localStorage.getItem('favorites')) || [];
@@ -778,26 +792,6 @@
       }
     }
     ```
-
-15. _**Services.vue**_ -> _**Favorites.vue**_
-  - edit `routes.js` and replace the import for `Another` with `import Favorites from './components/pages/Favorites';`
-  - edit `routes.js` and replace the route for `/about/another/` with:
-    ```javascript
-    {
-      path: '/favorites/',
-      component: Favorites
-    }
-    ```
-  - in _**LeftPanel.vue**_, replace the link for the Services page with
-    ```html
-    <f7-list-item
-      link="/favorites/"
-      title="Favorites"
-      link-view="#main-view"
-      link-reload
-      link-close-panel
-    />
-    ```
   - in _**main.js**_ after the other imports, add an import for `fetchFavoritesFromLocalStorage` in our utils
     ```javascript
     import { fetchFavoritesFromLocalStorage } from './utils/favorites';
@@ -818,10 +812,32 @@
       imagesById: {},
       favorites,
       favoritesById
+    };
+    ```
+
+---------
+
+15. _**Services.vue**_ -> _**Favorites.vue**_
+  - edit `routes.js` and replace the import for `Services` with `import Favorites from './components/pages/Favorites';`
+  - edit `routes.js` and replace the route for `/services/` with:
+    ```javascript
+    {
+      path: '/favorites/',
+      component: Favorites
     }
     ```
+  - in _**LeftPanel.vue**_, replace the link for the Services page with
+    ```html
+    <f7-list-item
+      link="/favorites/"
+      title="Favorites"
+      link-view="#main-view"
+      link-reload
+      link-close-panel
+    />
+    ```
   - rename `Services.vue` to `Favorites.vue`
-  - change `name` property to "Favorites"
+  - change `name` property to "favorites"
   - at the top of the `<script>` tag, add an eslint exception for the global store
     ```javascript
     /* global store */
@@ -915,3 +931,5 @@
       this.$f7.mainView.history = ['/'];
     }
     ```
+
+---------
