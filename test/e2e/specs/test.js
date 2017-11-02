@@ -20,19 +20,19 @@ module.exports = {
     browser
       .url(devServer)
       .waitForElementVisible('.view-main .navbar-inner .center', 5000)
-      .assert.containsText('.view-main .navbar-inner .center', 'Home');
+      .assert.containsText('.view-main .navbar-inner .center', 'Search');
   },
   'content block title': (browser) => {
     browser
       .url(devServer)
       .waitForElementVisible('.view-main .page-content .content-block-title', 5000)
-      .assert.containsText('.view-main .page-content .content-block-title', 'Home Page');
+      .assert.containsText('.view-main .page-content .content-block-title', 'Search for Stock images by keyword');
   },
   'content block': (browser) => {
     browser
       .url(devServer)
       .waitForElementVisible('.view-main .page-content .content-block', 5000)
-      .assert.containsText('.view-main .page-content .content-block', 'This is an example of split view application layout where left view degrades to panel on narrow screens (iPad portrait and iPhone). It behaves like default Mail app on iOS 7.\nEach view may have different layout, different navbar type (dynamic, fixed or static) or without navbar. You can easily control one view from another without any line of JavaScript just using "data-view" attribute on links.')
+      .assert.containsText('.view-main .page-content .content-block', 'FIND IMAGES')
       .end();
   }
 };
