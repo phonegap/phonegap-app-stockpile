@@ -9,6 +9,8 @@ A PhoneGap example app using [Vue.js](https://vuejs.org), [Framework7 (with Vue.
 
 ## Previewing the app
 
+Hosted version of the [Stockpile App](https://phonegap-stockpile-app.firebaseapp.com/).
+
 ### Requirements
 
 - PhoneGap CLI: `npm install -g phonegap`
@@ -73,3 +75,28 @@ cordova run android --device
 ```
 
 etc...
+
+
+## Build & Deploy to the Web
+
+### Build the app
+
+`npm run build`
+
+### Deploying to the Web
+
+1. set up a [Firebase account](https://firebase.google.com/).
+
+2. run `npm install -g firebase-tools` to install [firebase CLI](https://firebase.google.com/docs/cli/).
+
+3. run `firebase login` to link your local machine to your Firebase account
+
+4. run `firebase init` to initialize your project on Firebase (choose the options listed below)
+
+- choose Hosting
+- set public dir to `www`
+- configure as single-page app: `no`
+
+5. run `firebase serve` to run your app (basically the same as running `npm run dev`)
+
+6. run `firebase deploy` to upload your app to Firebase.
