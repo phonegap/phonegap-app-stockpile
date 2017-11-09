@@ -83,20 +83,18 @@ etc...
 
 `npm run build`
 
-### Deploying to the Web
+### Deploying the App
 
-1. set up a [Firebase account](https://firebase.google.com/).
+## Setup Firebase - these steps only need to be done the first time you deploy the app to Firebase
 
-2. run `npm install -g firebase-tools` to install [firebase CLI](https://firebase.google.com/docs/cli/).
+1. run `npm run login` to link your local machine to your Firebase account
 
-3. run `firebase login` to link your local machine to your Firebase account
-
-4. run `firebase init` to initialize your project on Firebase (choose the options listed below)
+2. run `npm run init` to initialize your project on Firebase (choose the options listed below)
 
 - choose Hosting
 - set public dir to `www`
 - configure as single-page app: `no`
 
-5. run `firebase serve` to run your app (basically the same as running `npm run dev`)
+## Deploy the app
 
-6. run `firebase deploy` to upload your app to Firebase.
+1. run `npm run deploy` to upload your app to Firebase.
