@@ -4,7 +4,7 @@
       <f7-nav-left sliding>
         <f7-link icon-f7="bars" open-panel="left"></f7-link>
       </f7-nav-left>
-      <f7-nav-center sliding>{{ title }}</f7-nav-center>
+      <f7-nav-center sliding>Search</f7-nav-center>
     </f7-navbar>
     <!-- Scrollable page content-->
     <f7-block-title>Search for Stock images by keyword</f7-block-title>
@@ -31,11 +31,6 @@
 <script>
   export default {
     name: 'Search',
-    data () {
-      return {
-        title: 'Search'
-      };
-    },
     methods: {
       onSubmit () {
         const { searchInput, searchForm } = this.$refs;
