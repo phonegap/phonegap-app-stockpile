@@ -15,7 +15,7 @@
     "cordova-build": "npm run build && cordova build",
     "cordova-run": "npm run build && cordova run browser",
     "cordova-run-ios": "npm run build && cordova run ios",
-    "cordova-run-android": "npm run build && cordova run android"
+    "cordova-run-android": "npm run build && cordova run android",
     "deploy": "firebase deploy",
     "init": "firebase init",
     "login": "firebase login"
