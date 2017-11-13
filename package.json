@@ -4,6 +4,7 @@
   "description": "n. - A storage pile accumulated for future use",
   "author": "tommy-carlos williams <tommy@devgeeks.org>",
   "scripts": {
+    "postinstall": "git update-index --skip-worktree ./src/utils/config.js",
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
     "build": "node build/build.js",
