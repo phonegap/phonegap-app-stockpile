@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "n. - A storage pile accumulated for future use",
   "author": "tommy-carlos williams <tommy@devgeeks.org>",
+  "license": "Apache-2.0",
   "scripts": {
     "dev": "node build/dev-server.js",
     "start": "node build/dev-server.js",
