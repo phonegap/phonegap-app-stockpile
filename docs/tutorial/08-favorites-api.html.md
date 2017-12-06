@@ -116,3 +116,5 @@ The `favorites` should be populated from local storage initially when the app is
     ```
 
 In the next lesson you will implement the UI and associated JavaScript needed to show the **Favorites** list view.
+
+## Next: [Favorites View](./09-favorites-page.html.md)

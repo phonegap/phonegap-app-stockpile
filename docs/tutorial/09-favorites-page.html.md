@@ -208,3 +208,5 @@ Run the app again in dev mode and try out the side menu link to load this new Fa
 > If you didn't see a blank page but actually saw a favorites list load, it may be because you've run the full version of the Stockpile app prior to this and the localStorage in your browser still has the contents. You can use the Chrome devtools -> Application tab to clear the localStorage and run it again (highlight the `favorites` key and press the delete button to clear).
 
 ![](./images/9-old-faves-delete.png)
+
+## Next: [Add Favorites to Details](./10-details-add-favorites.html.md)

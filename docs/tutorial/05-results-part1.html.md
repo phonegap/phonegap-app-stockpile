@@ -205,3 +205,5 @@ Run the app again in dev mode, enter a search term, hit the FIND IMAGES button a
 The results page now loads with the "Loading results..." message (since there are no results yet) so you've confirmed the search page is now routing to the results page. Move on to part 2 to begin adding the rest of the functionality for this view.
 
 > Note that the message component is bound with a `v-if` directive to the `results` variable, which was defaulted to `true`, and thus displays despite there being results yet. You could change the default to `false` to test how the `v-if` applies and no message displays.
+
+## Next: [Results View Part 2](./06-results-part2.html.md)

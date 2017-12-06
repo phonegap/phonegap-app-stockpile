@@ -273,29 +273,4 @@ Take a moment to stop and run the app now to make sure everything works as expec
 
 > **Note:** In this lesson you were given more helper reference code and instruction to help you get started versus what you will see in subsequent views. Most of them follow a similar pattern however, so you can refer back to this lesson for more contextual help as needed.
 
-<!-- TODO - THIS MOVE UNTIL RESULTS PAGE AVAILABLE
-### Handling form submission
-Now you need to add some code to actually do something when the **Find Images** button is hit. You have a stubbed out `onSubmit ()` function currently that is called but doesn't do anything quite yet.
-
-- Modify your `onSubmit ()` function as shown below:
-
-        onSubmit () {
-          const { searchInput, searchForm } = this.$refs;
-          const { filter, limit, q } = this.$f7.formToJSON(searchForm);
-          const { router } = this.$f7.mainView;
-          const input = searchInput.$el.querySelector('input');
-
-          input.blur();
-
-          if (!q.trim()) {
-            this.$f7.alert('Please enter a search term', 'Search Error');
-            return;
-          }
-          router.loadPage(`/results/${filter || 'words'}/${limit}/${q}/search`);
-        }
--->
-
-<!--TODO should i make these a list of things to try instead of paragraphs?
-
-Screenshot? And more on this page
--->
+## Next: [Data Store Setup](./03-data-store.html.md)

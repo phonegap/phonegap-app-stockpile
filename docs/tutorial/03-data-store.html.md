@@ -27,3 +27,5 @@ To handle state management in smaller to medium Vue applications, one common pat
 ## Resources:
 
 - [Simple state management, simpler than Vuex](http://vuetips.com/simple-state-management-vue-stash)
+
+## Next: [Using the Adobe Stock API](./04-stock-api.html.md)

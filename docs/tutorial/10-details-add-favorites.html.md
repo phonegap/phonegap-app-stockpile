@@ -134,3 +134,5 @@ There are some additional changes to make to the JavaScript to enable the favori
     ![](./images/favorites-page.png)
 
     ![](./images/vids/stockpile-faves.gif)
+
+## Next: [PWA Features](./11-pwa-features.html.md)

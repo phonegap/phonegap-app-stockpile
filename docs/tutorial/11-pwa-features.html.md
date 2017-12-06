@@ -44,3 +44,5 @@ Testing the performance and quality of your PWA is done using [Lighthouse](https
 - [`sw-precache-webpack-plugin`](https://www.npmjs.com/package/sw-precache-webpack-dev-plugin)
 - [Exemplary Progressive Web App Checklist](https://developers.google.com/web/progressive-web-apps/checklist)
 - [Cross Platform PWA Workshop](http://hollyschinsky.github.io/todos-app-pwa)
+
+## Next: [Testing](./12-testing.html.md)

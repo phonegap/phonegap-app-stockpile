@@ -136,3 +136,5 @@ These functions format the query string to pass in to the [Adobe Stock API](http
 ## Adobe Stock API request/results
 
 [The Adobe Stock Search API](https://www.adobe.io/apis/creativecloud/stock/docs/api/search.html) has a number of parameters you can pass in depending on what you're trying to query. Take a look at the documentation for details on why certain parameters were used in this app.
+
+## Next: [Results View Part 1](./05-results-part1.html.md)

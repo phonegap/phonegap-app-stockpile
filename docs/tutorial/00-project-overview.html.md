@@ -93,3 +93,5 @@ The Split Panel template provides a good app structure to get started with since
 1. Implement the JavaScript for the view updates
 
 > The split panel template automatically expands the left panel into a split view when the app is run on a device larger than a phone.
+
+## Next: [Project Creation & Setup](./01-project-creation.html.md)

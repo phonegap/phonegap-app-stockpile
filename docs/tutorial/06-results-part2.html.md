@@ -310,3 +310,5 @@ Run the app again in `dev` mode, enter a search term (ie: cat), hit the **FIND I
 This animated image shows how the infite scrolling and preloader displays when you scroll down to fetch more results.
 
   ![](./images/vids/stockpile-details.gif)
+
+## Next: [Details View](./07-details-page.html.md)

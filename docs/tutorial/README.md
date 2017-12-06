@@ -31,3 +31,5 @@ The Stockpile app was built using [Framework7 with Vue.js bindings](http://frame
 - [Demystifying Vue Webpack](https://alligator.io/vuejs/demistifying-vue-webpack/)
 - [Official Apache Cordova Docs](http://cordova.apache.org/docs)
 - [Adobe Stock API](https://www.adobe.io/apis/creativecloud/stock/docs/api/search.html).
+
+## Next: [Project Overview](./00-project-overview.html.md)

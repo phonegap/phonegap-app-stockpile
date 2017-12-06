@@ -333,3 +333,5 @@ After the closing `</script>` tag, add this `<style>` block to style the image c
 Note, tapping/clicking on the image in the details loads the image in the [Framework7 Photo Browser](http://framework7.io/vue/photo-browser.html) component. This allows pinch zooming, tapping to hide the rest of the UI, and other features exapected when viewing images.
 
 ![](./images/7-details.png)
+
+## Next: [Favorites API](./08-favorites-api.html.md)
